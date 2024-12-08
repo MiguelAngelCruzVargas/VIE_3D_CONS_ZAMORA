@@ -1,18 +1,11 @@
 {
   "models": {
-    "JKNKHjhJKH": {
-      "id": "JKNKHjhJKH",
-      "name": "HKJHK",
+    "model1": {
+      "id": "model1",
+      "name": "block con figura",
       "file": "models/3DModel.obj",
       "mtl": "models/3DModel.mtl",
-      "description": ""
-    },
-    "JHJKH": {
-      "id": "JHJKH",
-      "name": "HKH",
-      "file": "models/3DModel.obj",
-      "mtl": "models/3DModel.mtl",
-      "description": "KJHKJH\tJHJK"
+      "description": "block con figuras, disponibles en variso colores"
     }
   }
 }
