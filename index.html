@@ -248,7 +248,8 @@
         try {
             console.log('Cargando modelo:', modelId);
             
-            const response = await fetch('github_upload/data/models.json');
+            const response = await fetch('/VIE_3D_CONS_ZAMORA/github_upload/data/models.json');
+
             const data = await response.json();
             console.log('Data cargada:', data);
             
