@@ -6,6 +6,13 @@
       "file": "models/3DModel.obj",
       "mtl": "models/3DModel.mtl",
       "description": ""
+    },
+    "JHJKH": {
+      "id": "JHJKH",
+      "name": "HKH",
+      "file": "models/3DModel.obj",
+      "mtl": "models/3DModel.mtl",
+      "description": "KJHKJH\tJHJK"
     }
   }
 }
