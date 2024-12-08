@@ -7,148 +7,248 @@
     <title>Visor 3D Moderno</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+       /* Reset and base configuration */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
 
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: #1a1a2e;
-            color: #fff;
-            overflow: hidden;
-        }
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: #1a1a2e;
+    color: #fff;
+    overflow: hidden;
+}
 
-        #container {
-            position: fixed;
-            width: 100%;
-            height: 100%;
-        }
+/* Main container */
+#container {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+}
 
-        #loading-screen {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(26, 26, 46, 0.9);
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
-            transition: opacity 0.5s;
-        }
+#container canvas {
+    touch-action: none;
+}
 
-        .loader {
-            width: 48px;
-            height: 48px;
-            border: 5px solid #FFF;
-            border-bottom-color: #FF3D00;
-            border-radius: 50%;
-            animation: rotation 1s linear infinite;
-            margin-bottom: 20px;
-        }
+/* Loading screen */
+#loading-screen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(26, 26, 46, 0.9);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    transition: opacity 0.5s;
+}
 
-        @keyframes rotation {
-            0% {
-                transform: rotate(0deg);
-            }
+.loader {
+    width: 48px;
+    height: 48px;
+    border: 5px solid #FFF;
+    border-bottom-color: #FF3D00;
+    border-radius: 50%;
+    animation: rotation 1s linear infinite;
+    margin-bottom: 20px;
+}
 
-            100% {
-                transform: rotate(360deg);
-            }
-        }
+@keyframes rotation {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
 
-        #loading-text {
-            font-size: 1.2em;
-            color: #fff;
-        }
+#loading-text {
+    font-size: 1.2em;
+    color: #fff;
+}
 
-        #controls-panel {
-            position: fixed;
-            bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            padding: 15px 25px;
-            border-radius: 15px;
-            display: flex;
-            gap: 20px;
-            z-index: 100;
-            transition: opacity 0.3s;
-        }
+/* Model information panel */
+#model-info {
+    position: fixed;
+    top: 0;
+    left: 0;
+    background: linear-gradient(135deg, rgba(26, 26, 46, 0.9), rgba(26, 26, 46, 0.7));
+    backdrop-filter: blur(10px);
+    padding: 15px 20px;
+    width: auto;
+    max-width: 80%;
+    z-index: 100;
+    border-radius: 0 0 15px 0;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+}
 
-        .control-button {
-            background: none;
-            border: none;
-            color: white;
-            cursor: pointer;
-            padding: 8px;
-            border-radius: 8px;
-            transition: background-color 0.3s;
-        }
+#model-info h3 {
+    font-size: 1.3em;
+    font-weight: bold;
+    color: #FFD700;
+    margin-bottom: 5px;
+}
 
-        .control-button:hover {
-            background: rgba(255, 255, 255, 0.2);
-        }
+#model-info p {
+    font-size: 0.9em;
+    line-height: 1.4;
+    color: #E0E0E0;
+}
 
-        .control-button.active {
-            background: rgba(255, 255, 255, 0.3);
-        }
+/* Controls panel */
+#controls-panel {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    padding: 15px 25px;
+    border-radius: 15px;
+    display: flex;
+    gap: 20px;
+    z-index: 100;
+    transition: all 0.3s ease;
+}
 
-        #model-info {
-            position: fixed;
-            top: 20px;
-            left: 20px;
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            padding: 15px;
-            border-radius: 10px;
-            z-index: 100;
-        }
+.control-button {
+    background: none;
+    border: none;
+    color: white;
+    cursor: pointer;
+    padding: 12px;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    min-width: 44px;
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
 
-        #quality-indicator {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            padding: 10px 15px;
-            border-radius: 20px;
-            font-size: 0.9em;
-            z-index: 100;
-        }
+.control-button:hover {
+    background: rgba(255, 255, 255, 0.2);
+    transform: scale(1.1);
+}
 
-        .tooltip {
-            position: absolute;
-            background: rgba(0, 0, 0, 0.8);
-            color: white;
-            padding: 5px 10px;
-            border-radius: 5px;
-            font-size: 0.8em;
-            pointer-events: none;
-            opacity: 0;
-            transition: opacity 0.3s;
-        }
+.control-button.active {
+    background: rgba(255, 255, 255, 0.3);
+}
 
-        /* Animación para controles móviles */
-        @media (max-width: 768px) {
-            #controls-panel {
-                bottom: 10px;
-                padding: 10px 15px;
-            }
+/* Tooltips */
+.tooltip {
+    position: absolute;
+    background: rgba(0, 0, 0, 0.8);
+    color: white;
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-size: 0.8em;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.3s;
+}
 
-            .control-button {
-                padding: 5px;
-            }
-        }
+/* Tablet adaptations */
+@media (min-width: 768px) and (max-width: 1024px) {
+    #model-info {
+        max-width: 70%;
+        padding: 12px 20px;
+    }
+
+    #controls-panel {
+        padding: 12px 20px;
+        gap: 15px;
+    }
+}
+
+/* Mobile adaptations */
+@media (max-width: 767px) {
+    #model-info {
+        padding: 12px 15px;
+        max-width: 90%;
+    }
+
+    #model-info h3 {
+        font-size: 1.1em;
+    }
+
+    #model-info p {
+        font-size: 0.85em;
+    }
+
+    #controls-panel {
+        width: 95%;
+        padding: 10px;
+        gap: 10px;
+        bottom: 10px;
+    }
+
+    .control-button {
+        padding: 10px;
+    }
+}
+
+/* Landscape mode adaptations */
+@media (max-height: 500px) and (orientation: landscape) {
+    #model-info {
+        max-width: 50%;
+        padding: 8px 15px;
+    }
+
+    #controls-panel {
+        right: 10px;
+        bottom: 50%;
+        transform: translateY(50%);
+        flex-direction: column;
+        left: auto;
+        gap: 8px;
+        padding: 10px;
+    }
+
+    .control-button {
+        padding: 8px;
+    }
+}
+
+/* Hover effects for devices that support them */
+@media (hover: hover) {
+    .control-button:hover {
+        background: rgba(255, 255, 255, 0.25);
+    }
+}
+.company-name {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    font-size: 1em;
+    color: rgba(255, 215, 0, 0.6);  /* Dorado con mayor opacidad */
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    pointer-events: none;
+    z-index: 90;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+    background: rgba(26, 26, 46, 0.7);
+    padding: 8px 15px;
+    border-radius: 5px;
+    backdrop-filter: blur(5px);
+}
+
+/* Ajuste para móviles */
+@media (max-width: 767px) {
+    .company-name {
+        top: 15px;
+        right: 15px;
+        font-size: 0.85em;
+        padding: 6px 12px;
+    }
+}
     </style>
 </head>
 
 <body>
+    
     <div id="container"></div>
 
     <div id="loading-screen">
@@ -157,13 +257,10 @@
     </div>
 
     <div id="model-info">
-        <h3 id="model-name">Nombre del Modelo</h3>
-        <p id="model-details">Detalles adicionales</p>
+        <h3 id="model-name"><i class="fas fa-cube"></i> Nombre del Modelo</h3>
+        <p id="model-details"><i class="fas fa-info-circle"></i> Detalles adicionales del modelo se muestran aquí.</p>
     </div>
-
-    <div id="quality-indicator">
-        HD
-    </div>
+    
 
     <div id="controls-panel">
         <button class="control-button" id="rotate" title="Autorotación">
@@ -193,223 +290,263 @@
     }
 }
 </script>
+
 <script type="module">
+    // Importaciones necesarias
     import * as THREE from 'three';
     import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
     import { OBJLoader } from 'three/addons/loaders/OBJLoader.js';
     import { MTLLoader } from 'three/addons/loaders/MTLLoader.js';
 
-    // Variables globales
-    let scene, camera, renderer, controls, model;
-    let isAutoRotating = false;
-    let isWireframe = false;
-    let currentLightMode = 0;
-    const lightModes = ['estudio', 'exterior', 'cálido', 'frío'];
-    
-    // Obtener ID del modelo de la URL
-    const urlParams = new URLSearchParams(window.location.search);
-    const modelId = urlParams.get('model');
+    // Gestor de recursos
+    class ResourceManager {
+        constructor() {
+            this.cache = new Map();
+            this.loaders = {
+                obj: new OBJLoader(),
+                mtl: new MTLLoader()
+            };
+        }
 
-    // Función principal de inicialización
-    function init() {
-        // Configuración de la escena
-        scene = new THREE.Scene();
-        scene.background = new THREE.Color('#1a1a2e');
-
-        // Configuración de la cámara
-        camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-        camera.position.z = 5;
-
-        // Configuración del renderer
-        renderer = new THREE.WebGLRenderer({ antialias: true });
-        renderer.setSize(window.innerWidth, window.innerHeight);
-        renderer.setPixelRatio(window.devicePixelRatio);
-        renderer.outputEncoding = THREE.sRGBEncoding;
-        renderer.toneMapping = THREE.ACESFilmicToneMapping;
-        document.getElementById('container').appendChild(renderer.domElement);
-
-        // Configuración de controles
-        controls = new OrbitControls(camera, renderer.domElement);
-        controls.enableDamping = true;
-        controls.dampingFactor = 0.05;
-        controls.maxDistance = 10;
-        controls.minDistance = 2;
-
-        // Configuración inicial de iluminación
-        setupLighting('estudio');
-
-        // Configuración de eventos
-        window.addEventListener('resize', onWindowResize, false);
-        setupControlEvents();
+        async loadModel(modelPath, mtlPath) {
+            try {
+                const materials = await this.loaders.mtl.loadAsync(mtlPath);
+                materials.preload();
+                this.loaders.obj.setMaterials(materials);
+                return await this.loaders.obj.loadAsync(modelPath);
+            } catch (error) {
+                throw new Error(`Error cargando modelo: ${error.message}`);
+            }
+        }
     }
 
-    // Cargar información y modelo
-    async function loadModelInfo() {
-        try {
-            console.log('Cargando modelo:', modelId);
+    // Configuración principal
+    class ModelViewer {
+        constructor() {
+            // Variables de estado
+            this.scene = null;
+            this.camera = null;
+            this.renderer = null;
+            this.controls = null;
+            this.model = null;
+            this.resourceManager = new ResourceManager();
             
-            const response = await fetch('github_upload/data/models.json');
-            const data = await response.json();
-            console.log('Data cargada:', data);
+            // Estados de control
+            this.isAutoRotating = false;
+            this.isWireframe = false;
+            this.currentLightMode = 0;
+            this.lightModes = ['estudio', 'exterior', 'cálido', 'frío'];
             
-            const modelInfo = data.models[modelId];
-            if (!modelInfo) {
-                throw new Error('Modelo no encontrado');
+            // Obtener ID del modelo
+            const urlParams = new URLSearchParams(window.location.search);
+            this.modelId = urlParams.get('model');
+        }
+
+        async initialize() {
+            this.setupScene();
+            this.setupCamera();
+            this.setupRenderer();
+            this.setupControls();
+            this.setupLighting('estudio');
+            this.setupEventListeners();
+            await this.loadModel();
+            this.animate();
+        }
+
+        setupScene() {
+            this.scene = new THREE.Scene();
+            this.scene.background = new THREE.Color('#1a1a2e');
+        }
+
+        setupCamera() {
+            this.camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+            this.camera.position.z = 5;
+        }
+
+        setupRenderer() {
+            this.renderer = new THREE.WebGLRenderer({ antialias: true });
+            this.renderer.setSize(window.innerWidth, window.innerHeight);
+            this.renderer.setPixelRatio(window.devicePixelRatio);
+            this.renderer.outputEncoding = THREE.sRGBEncoding;
+            this.renderer.toneMapping = THREE.ACESFilmicToneMapping;
+            document.getElementById('container').appendChild(this.renderer.domElement);
+        }
+
+        setupControls() {
+            this.controls = new OrbitControls(this.camera, this.renderer.domElement);
+            this.controls.enableDamping = true;
+            this.controls.dampingFactor = 0.05;
+            this.controls.maxDistance = 10;
+            this.controls.minDistance = 2;
+        }
+
+        setupLighting(mode) {
+            // Limpiar luces existentes
+            this.scene.children.forEach(child => {
+                if (child.isLight) this.scene.remove(child);
+            });
+
+            const lightSetups = {
+                estudio: () => {
+                    this.scene.add(new THREE.AmbientLight(0xffffff, 0.5));
+                    const front = new THREE.DirectionalLight(0xffffff, 1);
+                    front.position.set(0, 0, 5);
+                    const back = new THREE.DirectionalLight(0xffffff, 0.5);
+                    back.position.set(0, 0, -5);
+                    this.scene.add(front, back);
+                },
+                exterior: () => {
+                    this.scene.add(new THREE.AmbientLight(0x90c0ff, 0.5));
+                    const sun = new THREE.DirectionalLight(0xffffff, 1.5);
+                    sun.position.set(5, 5, 5);
+                    this.scene.add(sun);
+                },
+                cálido: () => {
+                    this.scene.add(new THREE.AmbientLight(0xffccaa, 0.5));
+                    const warmLight = new THREE.PointLight(0xff9966, 1);
+                    warmLight.position.set(3, 3, 3);
+                    this.scene.add(warmLight);
+                },
+                frío: () => {
+                    this.scene.add(new THREE.AmbientLight(0xaaccff, 0.5));
+                    const coolLight = new THREE.PointLight(0x6699ff, 1);
+                    coolLight.position.set(3, 3, 3);
+                    this.scene.add(coolLight);
+                }
+            };
+
+            if (lightSetups[mode]) {
+                lightSetups[mode]();
             }
+        }
 
-            // Actualizar interfaz
-            document.getElementById('model-name').textContent = modelInfo.name;
-            document.getElementById('model-details').textContent = modelInfo.description;
-
-            // Cargar modelo
-            const mtlLoader = new MTLLoader();
-            const objLoader = new OBJLoader();
-
+        async loadModel() {
             try {
-                // Cargar materiales
-                const materials = await mtlLoader.loadAsync(`github_upload/${modelInfo.mtl}`);
-                materials.preload();
-                objLoader.setMaterials(materials);
-                
-                // Cargar objeto
-                model = await objLoader.loadAsync(`github_upload/${modelInfo.file}`);
-                
-                // Limpiar escena anterior
-                scene.children.forEach(child => {
-                    if (child.type === "Group") scene.remove(child);
-                });
-                
-                scene.add(model);
+                const modelData = await this.fetchModelData();
+                if (!modelData) return;
 
-                // Ajustar cámara al modelo
-                const box = new THREE.Box3().setFromObject(model);
-                const center = box.getCenter(new THREE.Vector3());
-                const size = box.getSize(new THREE.Vector3());
-                
-                const maxDim = Math.max(size.x, size.y, size.z);
-                camera.position.z = maxDim * 2;
-                controls.target.copy(center);
-                controls.update();
+                const { file, mtl, name, description } = modelData;
+                this.updateUIInfo(name, description);
 
-                // Ocultar pantalla de carga
-                document.getElementById('loading-screen').style.opacity = '0';
-                setTimeout(() => {
-                    document.getElementById('loading-screen').style.display = 'none';
-                }, 500);
+                // Cargar modelo
+                this.model = await this.resourceManager.loadModel(
+                    `github_upload/${file}`,
+                    `github_upload/${mtl}`
+                );
+
+                this.addModelToScene();
+                this.adjustCameraToModel();
+                this.hideLoadingScreen();
 
             } catch (error) {
-                console.error('Error cargando el modelo:', error);
-                document.getElementById('loading-text').textContent = 'Error al cargar el modelo';
+                this.handleError(error);
             }
+        }
 
-        } catch (error) {
+        async fetchModelData() {
+            const response = await fetch('github_upload/data/models.json');
+            const data = await response.json();
+            return data.models[this.modelId];
+        }
+
+        updateUIInfo(name, description) {
+            document.getElementById('model-name').textContent = name;
+            document.getElementById('model-details').textContent = description;
+        }
+
+        addModelToScene() {
+            // Limpiar modelos anteriores
+            this.scene.children.forEach(child => {
+                if (child.type === "Group") this.scene.remove(child);
+            });
+            this.scene.add(this.model);
+        }
+
+        adjustCameraToModel() {
+            const box = new THREE.Box3().setFromObject(this.model);
+            const center = box.getCenter(new THREE.Vector3());
+            const size = box.getSize(new THREE.Vector3());
+            
+            const maxDim = Math.max(size.x, size.y, size.z);
+            this.camera.position.z = maxDim * 2;
+            this.controls.target.copy(center);
+            this.controls.update();
+        }
+
+        hideLoadingScreen() {
+            const loadingScreen = document.getElementById('loading-screen');
+            loadingScreen.style.opacity = '0';
+            setTimeout(() => {
+                loadingScreen.style.display = 'none';
+            }, 500);
+        }
+
+        handleError(error) {
             console.error('Error:', error);
             document.getElementById('loading-text').textContent = error.message;
         }
-    }
 
-    // Configuración de iluminación
-    function setupLighting(mode) {
-        scene.children.forEach(child => {
-            if (child.isLight) scene.remove(child);
-        });
+        setupEventListeners() {
+            // Eventos de ventana
+            window.addEventListener('resize', this.handleResize.bind(this));
 
-        switch (mode) {
-            case 'estudio':
-                scene.add(new THREE.AmbientLight(0xffffff, 0.5));
-                const front = new THREE.DirectionalLight(0xffffff, 1);
-                front.position.set(0, 0, 5);
-                scene.add(front);
-                const back = new THREE.DirectionalLight(0xffffff, 0.5);
-                back.position.set(0, 0, -5);
-                scene.add(back);
-                break;
+            // Eventos de controles
+            const controls = {
+                rotate: () => {
+                    this.isAutoRotating = !this.isAutoRotating;
+                    this.controls.autoRotate = this.isAutoRotating;
+                    document.getElementById('rotate').classList.toggle('active');
+                },
+                'zoom-fit': () => {
+                    if (this.model) this.adjustCameraToModel();
+                },
+                wireframe: () => {
+                    this.isWireframe = !this.isWireframe;
+                    if (this.model) {
+                        this.model.traverse((child) => {
+                            if (child.isMesh) {
+                                child.material.wireframe = this.isWireframe;
+                            }
+                        });
+                    }
+                    document.getElementById('wireframe').classList.toggle('active');
+                },
+                lights: () => {
+                    this.currentLightMode = (this.currentLightMode + 1) % this.lightModes.length;
+                    this.setupLighting(this.lightModes[this.currentLightMode]);
+                },
+                screenshot: () => {
+                    const link = document.createElement('a');
+                    link.download = 'modelo-3d.png';
+                    link.href = this.renderer.domElement.toDataURL('image/png');
+                    link.click();
+                }
+            };
 
-            case 'exterior':
-                scene.add(new THREE.AmbientLight(0x90c0ff, 0.5));
-                const sun = new THREE.DirectionalLight(0xffffff, 1.5);
-                sun.position.set(5, 5, 5);
-                scene.add(sun);
-                break;
+            // Configurar eventos de botones
+            Object.entries(controls).forEach(([id, handler]) => {
+                document.getElementById(id)?.addEventListener('click', handler);
+            });
+        }
 
-            case 'cálido':
-                scene.add(new THREE.AmbientLight(0xffccaa, 0.5));
-                const warmLight = new THREE.PointLight(0xff9966, 1);
-                warmLight.position.set(3, 3, 3);
-                scene.add(warmLight);
-                break;
+        handleResize() {
+            this.camera.aspect = window.innerWidth / window.innerHeight;
+            this.camera.updateProjectionMatrix();
+            this.renderer.setSize(window.innerWidth, window.innerHeight);
+        }
 
-            case 'frío':
-                scene.add(new THREE.AmbientLight(0xaaccff, 0.5));
-                const coolLight = new THREE.PointLight(0x6699ff, 1);
-                coolLight.position.set(3, 3, 3);
-                scene.add(coolLight);
-                break;
+        animate() {
+            requestAnimationFrame(this.animate.bind(this));
+            this.controls.update();
+            this.renderer.render(this.scene, this.camera);
         }
     }
 
-    // Configuración de eventos de control
-    function setupControlEvents() {
-        document.getElementById('rotate').addEventListener('click', () => {
-            isAutoRotating = !isAutoRotating;
-            controls.autoRotate = isAutoRotating;
-            document.getElementById('rotate').classList.toggle('active');
-        });
-
-        document.getElementById('zoom-fit').addEventListener('click', () => {
-            if (model) {
-                const box = new THREE.Box3().setFromObject(model);
-                const center = box.getCenter(new THREE.Vector3());
-                const size = box.getSize(new THREE.Vector3());
-                const maxDim = Math.max(size.x, size.y, size.z);
-                camera.position.z = maxDim * 2;
-                camera.lookAt(center);
-            }
-        });
-
-        document.getElementById('wireframe').addEventListener('click', () => {
-            isWireframe = !isWireframe;
-            if (model) {
-                model.traverse((child) => {
-                    if (child.isMesh) {
-                        child.material.wireframe = isWireframe;
-                    }
-                });
-            }
-            document.getElementById('wireframe').classList.toggle('active');
-        });
-
-        document.getElementById('lights').addEventListener('click', () => {
-            currentLightMode = (currentLightMode + 1) % lightModes.length;
-            setupLighting(lightModes[currentLightMode]);
-        });
-
-        document.getElementById('screenshot').addEventListener('click', () => {
-            const link = document.createElement('a');
-            link.download = 'modelo-3d.png';
-            link.href = renderer.domElement.toDataURL('image/png');
-            link.click();
-        });
-    }
-
-    function onWindowResize() {
-        camera.aspect = window.innerWidth / window.innerHeight;
-        camera.updateProjectionMatrix();
-        renderer.setSize(window.innerWidth, window.innerHeight);
-    }
-
-    function animate() {
-        requestAnimationFrame(animate);
-        controls.update();
-        renderer.render(scene, camera);
-    }
-
-    // Inicialización de la aplicación
-    init();
-    loadModelInfo();
-    animate();
+    // Inicialización
+    const viewer = new ModelViewer();
+    viewer.initialize();
 </script>
-
+<div class="company-name">Constructora Zamora</div>
 </body>
 
 </html>
