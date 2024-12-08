@@ -1,0 +1,11 @@
+{
+  "models": {
+    "JKNKHjhJKH": {
+      "id": "JKNKHjhJKH",
+      "name": "HKJHK",
+      "file": "models/3DModel.obj",
+      "mtl": "models/3DModel.mtl",
+      "description": ""
+    }
+  }
+}
