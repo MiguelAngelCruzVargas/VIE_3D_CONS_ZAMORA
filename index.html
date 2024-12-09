@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Visor 3D Moderno</title>
+    <title>Visor 3D CZA</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link href="css/style.css" rel="stylesheet">
 </head>
@@ -78,29 +78,152 @@
         import { OBJLoader } from 'three/addons/loaders/OBJLoader.js';
         import { MTLLoader } from 'three/addons/loaders/MTLLoader.js';
 
+
         // Gestor de recursos
         class ResourceManager {
-            constructor() {
-                this.cache = new Map();
-                this.loaders = {
-                    obj: new OBJLoader(),
-                    mtl: new MTLLoader()
-                };
+    constructor() {
+        this.cache = new Map();
+        this.modelCache = new ModelCache();
+        this.loaders = {
+            obj: new OBJLoader(),
+            mtl: new MTLLoader()
+        };
+        this.setupProgressHandlers();
+    }
+
+    setupProgressHandlers() {
+        this.loaders.obj.manager.onProgress = (url, loaded, total) => {
+            const progress = (loaded / total * 100).toFixed(0);
+            const loadingText = document.getElementById('loading-text');
+            if (loadingText) {
+                loadingText.textContent = `Cargando modelo... ${progress}%`;
+            }
+        };
+
+        this.loaders.mtl.manager.onProgress = (url, loaded, total) => {
+            const progress = (loaded / total * 100).toFixed(0);
+            const loadingText = document.getElementById('loading-text');
+            if (loadingText) {
+                loadingText.textContent = `Cargando materiales... ${progress}%`;
+            }
+        };
+    }
+
+    async loadModel(modelPath, mtlPath) {
+        try {
+            const cacheKey = `${modelPath}-${mtlPath}`;
+
+            // Verificar caché en memoria
+            if (this.cache.has(cacheKey)) {
+                console.log('Modelo recuperado de caché en memoria');
+                return this.cache.get(cacheKey).clone();
             }
 
-            async loadModel(modelPath, mtlPath) {
+            // Verificar IndexedDB
+            const cachedModel = await this.modelCache.get(cacheKey);
+            if (cachedModel) {
+                console.log('Modelo recuperado de IndexedDB');
+                const loader = new THREE.ObjectLoader();
+                const model = await loader.parseAsync(cachedModel);
+                this.cache.set(cacheKey, model.clone());
+                return model;
+            }
+
+            // Si no está en caché, cargar desde el servidor
+            console.log('Cargando modelo desde servidor');
+            const materials = await this.loaders.mtl.loadAsync(mtlPath);
+            materials.preload();
+            this.loaders.obj.setMaterials(materials);
+            const model = await this.loaders.obj.loadAsync(modelPath);
+
+            // Optimizar el modelo
+            model.traverse(child => {
+                if (child.isMesh) {
+                    child.geometry.computeVertexNormals();
+                    child.geometry.computeBoundingSphere();
+
+                    if (child.material) {
+                        child.material.dispose();
+                    }
+                }
+            });
+
+            // Guardar en ambas cachés
+            this.cache.set(cacheKey, model.clone());
+            try {
+                await this.modelCache.set(cacheKey, model.toJSON());
+                console.log('Modelo guardado en IndexedDB');
+            } catch (error) {
+                console.warn('Error al guardar en IndexedDB:', error);
+            }
+
+            return model;
+        } catch (error) {
+            console.error('Error detallado:', error);
+            throw new Error(`Error cargando modelo: ${error.message}`);
+        }
+    }
+}
+
+        // Crear una nueva clase para manejar IndexedDB
+        class ModelCache {
+            constructor() {
+                this.dbName = 'ModelViewerCache';
+                this.dbVersion = 1;
+                this.storeName = 'models';
+                this.db = null;
+                this.initDatabase();
+            }
+
+            async initDatabase() {
                 try {
-                    const materials = await this.loaders.mtl.loadAsync(mtlPath);
-                    materials.preload();
-                    this.loaders.obj.setMaterials(materials);
-                    return await this.loaders.obj.loadAsync(modelPath);
+                    return new Promise((resolve, reject) => {
+                        const request = indexedDB.open(this.dbName, this.dbVersion);
+
+                        request.onerror = () => reject(request.error);
+                        request.onsuccess = () => {
+                            this.db = request.result;
+                            resolve();
+                        };
+
+                        request.onupgradeneeded = (event) => {
+                            const db = event.target.result;
+                            if (!db.objectStoreNames.contains(this.storeName)) {
+                                db.createObjectStore(this.storeName);
+                            }
+                        };
+                    });
                 } catch (error) {
-                    throw new Error(`Error cargando modelo: ${error.message}`);
+                    console.warn('Error inicializando IndexedDB:', error);
                 }
             }
+
+            async get(key) {
+                if (!this.db) await this.initDatabase();
+
+                return new Promise((resolve, reject) => {
+                    const transaction = this.db.transaction(this.storeName, 'readonly');
+                    const store = transaction.objectStore(this.storeName);
+                    const request = store.get(key);
+
+                    request.onerror = () => reject(request.error);
+                    request.onsuccess = () => resolve(request.result);
+                });
+            }
+
+            async set(key, value) {
+                if (!this.db) await this.initDatabase();
+
+                return new Promise((resolve, reject) => {
+                    const transaction = this.db.transaction(this.storeName, 'readwrite');
+                    const store = transaction.objectStore(this.storeName);
+                    const request = store.put(value, key);
+
+                    request.onerror = () => reject(request.error);
+                    request.onsuccess = () => resolve();
+                });
+            }
         }
-
-
         // Configuración principal
         class ModelViewer {
             constructor() {
