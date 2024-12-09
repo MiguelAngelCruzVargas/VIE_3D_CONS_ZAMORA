@@ -30,13 +30,13 @@ body {
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(26, 26, 46, 0.9);
+    background: rgba(26, 26, 46, 0.95);
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
     z-index: 1000;
-    transition: opacity 0.5s;
+    transition: opacity 0.5s ease;
 }
 
 .loader {
@@ -47,21 +47,24 @@ body {
     border-radius: 50%;
     animation: rotation 1s linear infinite;
     margin-bottom: 20px;
-}
-
-@keyframes rotation {
-    0% {
-        transform: rotate(0deg);
-    }
-
-    100% {
-        transform: rotate(360deg);
-    }
+    box-shadow: 0 0 10px rgba(255, 61, 0, 0.3);
 }
 
 #loading-text {
     font-size: 1.2em;
     color: #fff;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    animation: pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes rotation {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.7; }
 }
 
 /* Model information panel */
@@ -78,7 +81,6 @@ body {
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
 }
 
-/* Título del modelo */
 #model-info h3 {
     font-size: 1.3em;
     font-weight: bold;
@@ -89,7 +91,6 @@ body {
     text-overflow: ellipsis;
 }
 
-/* Descripción del modelo */
 #model-info p {
     font-size: 0.9em;
     line-height: 1.4;
@@ -100,85 +101,6 @@ body {
     word-break: break-word;
 }
 
-  /* Tablet adaptations */
-  @media (min-width: 768px) and (max-width: 1024px) {
-    #model-info {
-        max-width: 70%;
-        padding: 12px 20px;
-    }
-
-    #controls-panel {
-        padding: 12px 20px;
-        gap: 15px;
-    }
-}
-
-
-/* Mobile adaptations */
-@media (max-width: 767px) {
-    #model-info {
-        padding: 10px 15px;
-        max-width: 200px;
-    }
-
-    #model-info h3 {
-        font-size: 1.1em;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        max-width: 170px; /* Ajusta según necesites */
-    }
-
-
-    #model-info p {
-        font-size: 0.85em;
-        line-height: 1.3;
-        -webkit-line-clamp: 2; /* Permite dos líneas */
-        max-width: 170px; /* Ajusta según necesites */
-    }
-
-
-    #controls-panel {
-        width: 95%;
-        padding: 10px;
-        gap: 10px;
-        bottom: 10px;
-    }
-
-    .control-button {
-        padding: 10px;
-    }
-}
-
-
-/* Landscape mode adaptations */
-@media (max-height: 500px) and (orientation: landscape) {
-    #model-info {
-        min-width: 140px;
-        max-width: 180px;
-        padding: 8px 12px;
-    }
-
-
-
-    
-    #controls-panel {
-        right: 10px;
-        bottom: 50%;
-        transform: translateY(50%);
-        flex-direction: column;
-        left: auto;
-        gap: 8px;
-        padding: 10px;
-    }
-
-    .control-button {
-        padding: 8px;
-    }
-}
-
-
-
 /* Controls panel */
 #controls-panel {
     position: fixed;
@@ -186,7 +108,8 @@ body {
     left: 50%;
     transform: translateX(-50%);
     background: rgba(255, 255, 255, 0.1);
-    backdrop-filter: blur(10px);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
     padding: 15px 25px;
     border-radius: 15px;
     display: flex;
@@ -219,28 +142,7 @@ body {
     background: rgba(255, 255, 255, 0.3);
 }
 
-/* Tooltips */
-.tooltip {
-    position: absolute;
-    background: rgba(0, 0, 0, 0.8);
-    color: white;
-    padding: 5px 10px;
-    border-radius: 5px;
-    font-size: 0.8em;
-    pointer-events: none;
-    opacity: 0;
-    transition: opacity 0.3s;
-}
-
-
-
-/* Hover effects for devices that support them */
-@media (hover: hover) {
-    .control-button:hover {
-        background: rgba(255, 255, 255, 0.25);
-    }
-}
-
+/* Company name */
 .company-name {
     position: fixed;
     top: 20px;
@@ -259,8 +161,34 @@ body {
     backdrop-filter: blur(5px);
 }
 
-/* Ajuste para tablets */
-@media (max-width: 1024px) {
+/* Light mode indicator */
+#light-mode-indicator {
+    position: fixed;
+    top: 80px;
+    right: 20px;
+    background: rgba(0, 0, 0, 0.7);
+    color: white;
+    font-size: 1.2rem;
+    padding: 10px 15px;
+    border-radius: 10px;
+    z-index: 100;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    transition: opacity 0.3s;
+}
+
+/* Responsive Design */
+/* Tablets (768px - 1024px) */
+@media (min-width: 768px) and (max-width: 1024px) {
+    #model-info {
+        max-width: 70%;
+        padding: 12px 20px;
+    }
+
+    #controls-panel {
+        padding: 12px 20px;
+        gap: 15px;
+    }
+
     .company-name {
         font-size: 0.9em;
         padding: 6px 12px;
@@ -269,8 +197,38 @@ body {
     }
 }
 
-/* Ajuste para móviles */
+/* Mobile Devices (max-width: 767px) */
 @media (max-width: 767px) {
+    #model-info {
+        padding: 10px 15px;
+        max-width: 200px;
+    }
+
+    #model-info h3 {
+        font-size: 1.1em;
+        max-width: 170px;
+    }
+
+    #model-info p {
+        font-size: 0.85em;
+        line-height: 1.3;
+        -webkit-line-clamp: 2;
+        max-width: 170px;
+    }
+
+    #controls-panel {
+        width: 95%;
+        padding: 10px;
+        gap: 10px;
+        bottom: 10px;
+        backdrop-filter: blur(15px);
+        -webkit-backdrop-filter: blur(15px);
+    }
+
+    .control-button {
+        padding: 10px;
+    }
+
     .company-name {
         font-size: 0.7em;
         padding: 5px 10px;
@@ -280,15 +238,36 @@ body {
     }
 }
 
-/* Ajuste para móviles muy pequeños */
+/* Small Mobile Devices (max-width: 320px) */
 @media (max-width: 320px) {
     .company-name {
         font-size: 0.6em;
         padding: 4px 8px;
     }
 }
-/* Ajuste para modo paisaje en móviles */
+
+/* Landscape Mode */
 @media (max-height: 500px) and (orientation: landscape) {
+    #model-info {
+        min-width: 140px;
+        max-width: 180px;
+        padding: 8px 12px;
+    }
+
+    #controls-panel {
+        right: 10px;
+        bottom: 50%;
+        transform: translateY(50%);
+        flex-direction: column;
+        left: auto;
+        gap: 8px;
+        padding: 10px;
+    }
+
+    .control-button {
+        padding: 8px;
+    }
+
     .company-name {
         font-size: 0.65em;
         padding: 4px 8px;
@@ -297,26 +276,17 @@ body {
     }
 }
 
-/* Ajuste para móviles */
-@media (max-width: 767px) {
-    #model-info {
-        min-width: 160px;
-        max-width: 200px;
-        padding: 10px 15px;
+/* Hover effects for devices that support hover */
+@media (hover: hover) {
+    .control-button:hover {
+        background: rgba(255, 255, 255, 0.25);
     }
 }
 
-#light-mode-indicator {
-    position: fixed;
-    top: 80px;
-    right: 20px;
-    background: rgba(0, 0, 0, 0.7);
-    color: white;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    font-size: 1.2rem;
-    padding: 10px 15px;
-    border-radius: 10px;
-    z-index: 100;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-    transition: opacity 0.3s;
+/* High DPI Screens */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+    #controls-panel {
+        backdrop-filter: blur(18px);
+        -webkit-backdrop-filter: blur(18px);
+    }
 }
