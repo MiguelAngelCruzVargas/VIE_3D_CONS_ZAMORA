@@ -1,0 +1,279 @@
+/* Reset and base configuration */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: #1a1a2e;
+    color: #fff;
+    overflow: hidden;
+}
+
+/* Main container */
+#container {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+}
+
+#container canvas {
+    touch-action: none;
+}
+
+/* Loading screen */
+#loading-screen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(26, 26, 46, 0.9);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    transition: opacity 0.5s;
+}
+
+.loader {
+    width: 48px;
+    height: 48px;
+    border: 5px solid #FFF;
+    border-bottom-color: #FF3D00;
+    border-radius: 50%;
+    animation: rotation 1s linear infinite;
+    margin-bottom: 20px;
+}
+
+@keyframes rotation {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+#loading-text {
+    font-size: 1.2em;
+    color: #fff;
+}
+
+/* Model information panel */
+#model-info {
+    position: fixed;
+    top: 0;
+    left: 0;
+    background: linear-gradient(135deg, rgba(26, 26, 46, 0.9), rgba(26, 26, 46, 0.7));
+    backdrop-filter: blur(10px);
+    padding: 15px 20px;
+    width: auto;
+    max-width: 60%; /* Mantiene el ancho máximo */
+    z-index: 100;
+    border-radius: 0 0 15px 0;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+    overflow: hidden; /* Controla el contenido */
+    word-wrap: break-word; /* Permite dividir palabras largas */
+    white-space: normal; /* Permite que el texto ocupe varias líneas */
+}
+
+/* Título del modelo */
+#model-info h3 {
+    font-size: 1.3em;
+    font-weight: bold;
+    color: #FFD700;
+    margin-bottom: 5px;
+    white-space: normal; /* Permite saltos de línea */
+    overflow: hidden; /* Evita el desbordamiento */
+    text-overflow: ellipsis; /* Añade puntos suspensivos si es necesario */
+}
+
+
+/* Descripción del modelo */
+#model-info p {
+    font-size: 0.9em;
+    line-height: 1.4;
+    color: #E0E0E0;
+    white-space: normal; /* Permite texto en múltiples líneas */
+    overflow: hidden; /* Evita que el texto se salga del contenedor */
+}
+
+  /* Tablet adaptations */
+  @media (min-width: 768px) and (max-width: 1024px) {
+    #model-info {
+        max-width: 70%;
+        padding: 12px 20px;
+    }
+
+    #controls-panel {
+        padding: 12px 20px;
+        gap: 15px;
+    }
+}
+
+
+/* Mobile adaptations */
+@media (max-width: 767px) {
+    #model-info {
+        padding: 12px 15px;
+        max-width: 90%;
+    }
+
+    #model-info h3 {
+        font-size: 1.1em;
+    }
+
+    #model-info p {
+        font-size: 0.85em;
+    }
+
+
+    #controls-panel {
+        width: 95%;
+        padding: 10px;
+        gap: 10px;
+        bottom: 10px;
+    }
+
+    .control-button {
+        padding: 10px;
+    }
+}
+
+
+/* Landscape mode adaptations */
+@media (max-height: 500px) and (orientation: landscape) {
+    #model-info {
+        max-width: 50%;
+        padding: 8px 15px;
+    }
+
+
+    
+    #controls-panel {
+        right: 10px;
+        bottom: 50%;
+        transform: translateY(50%);
+        flex-direction: column;
+        left: auto;
+        gap: 8px;
+        padding: 10px;
+    }
+
+    .control-button {
+        padding: 8px;
+    }
+}
+
+
+
+/* Controls panel */
+#controls-panel {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    padding: 15px 25px;
+    border-radius: 15px;
+    display: flex;
+    gap: 20px;
+    z-index: 100;
+    transition: all 0.3s ease;
+}
+
+.control-button {
+    background: none;
+    border: none;
+    color: white;
+    cursor: pointer;
+    padding: 12px;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    min-width: 44px;
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.control-button:hover {
+    background: rgba(255, 255, 255, 0.2);
+    transform: scale(1.1);
+}
+
+.control-button.active {
+    background: rgba(255, 255, 255, 0.3);
+}
+
+/* Tooltips */
+.tooltip {
+    position: absolute;
+    background: rgba(0, 0, 0, 0.8);
+    color: white;
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-size: 0.8em;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+
+
+
+/* Hover effects for devices that support them */
+@media (hover: hover) {
+    .control-button:hover {
+        background: rgba(255, 255, 255, 0.25);
+    }
+}
+
+.company-name {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    font-size: 1em;
+    color: rgba(255, 215, 0, 0.6);
+    /* Dorado con mayor opacidad */
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    pointer-events: none;
+    z-index: 90;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+    background: rgba(26, 26, 46, 0.7);
+    padding: 8px 15px;
+    border-radius: 5px;
+    backdrop-filter: blur(5px);
+}
+
+/* Ajuste para móviles */
+@media (max-width: 767px) {
+    .company-name {
+        top: 15px;
+        right: 15px;
+        font-size: 0.85em;
+        padding: 6px 12px;
+    }
+}
+
+#light-mode-indicator {
+    position: fixed;
+    top: 80px;
+    right: 20px;
+    background: rgba(0, 0, 0, 0.7);
+    color: white;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-size: 1.2rem;
+    padding: 10px 15px;
+    border-radius: 10px;
+    z-index: 100;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    transition: opacity 0.3s;
+}
