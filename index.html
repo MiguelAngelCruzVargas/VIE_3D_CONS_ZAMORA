@@ -253,36 +253,136 @@
 
 
             async fetchModelData() {
-    try {
-        const response = await fetch('github_upload/data/models.json');
-        const data = await response.json();
-        return data.models[this.modelId];
-    } catch (error) {
-        console.error('Error al cargar datos del modelo:', error);
-        return { name: 'Modelo Desconocido', description: 'Descripción no disponible' }; // Valores por defecto
-    }
-}
+                try {
+                    const response = await fetch('github_upload/data/models.json');
+                    const data = await response.json();
+                    const modelData = data.models[this.modelId];
+                    // Guardar los datos del modelo actual
+                    this.currentModel = modelData;
+                    return modelData;
+                } catch (error) {
+                    console.error('Error al cargar datos del modelo:', error);
+                    return {
+                        id: 'unknown',
+                        name: 'Modelo Desconocido',
+                        description: 'Descripción no disponible'
+                    };
+                }
+            }
 
-updateUIInfo(name, description) {
-    const nameElement = document.getElementById('model-name');
-    const detailsElement = document.getElementById('model-details');
+            async loadModel() {
+                try {
+                    const modelData = await this.fetchModelData();
+                    if (!modelData) return;
 
-    // Truncar el nombre si excede 30 caracteres
-    const maxNameLength = 30;
-    const processedName =
-        name.length > maxNameLength ? name.slice(0, maxNameLength) + '...' : name;
+                    const { file, mtl, name, description } = modelData;
+                    this.updateUIInfo(name, description);
 
-    // Truncar o procesar descripción si excede 100 caracteres
-    const maxDescriptionLength = 100;
-    const processedDescription =
-        description.length > maxDescriptionLength
-            ? description.slice(0, maxDescriptionLength) + '...'
-            : description;
+                    // Cargar modelo
+                    this.model = await this.resourceManager.loadModel(
+                        `github_upload/${file}`,
+                        `github_upload/${mtl}`
+                    );
 
-    // Asignar valores procesados a los elementos
-    nameElement.textContent = processedName;
-    detailsElement.textContent = processedDescription;
-}
+                    this.addModelToScene();
+                    this.adjustCameraToModel();
+                    this.hideLoadingScreen();
+
+                } catch (error) {
+                    this.handleError(error);
+                }
+            }
+
+            updateUIInfo(name, description) {
+                const nameElement = document.getElementById('model-name');
+                const detailsElement = document.getElementById('model-details');
+
+                // Detectar si estamos en móvil
+                const isMobile = window.innerWidth <= 768;
+
+                if (isMobile) {
+                    // En móvil: nombre en una línea, descripción en dos líneas si es necesario
+                    const processedName = this.truncateText(name, 17); // Una línea para el nombre
+
+                    // Para la descripción, permitimos más caracteres ya que puede usar dos líneas
+                    const processedDescription = this.truncateText(description, 60); // Aproximadamente dos líneas
+
+                    nameElement.textContent = processedName;
+                    detailsElement.textContent = processedDescription;
+                } else {
+                    // En desktop mantenemos el comportamiento original
+                    nameElement.textContent = name;
+                    detailsElement.textContent = this.truncateText(description, 100);
+                }
+            }
+
+            truncateText(text, maxLength) {
+                if (!text) return '';
+                if (text.length <= maxLength) return text;
+
+                // Buscar el último espacio antes del límite para no cortar palabras
+                const lastSpace = text.lastIndexOf(' ', maxLength);
+                if (lastSpace > 0) {
+                    return text.slice(0, lastSpace) + '...';
+                }
+                return text.slice(0, maxLength) + '...';
+            }
+
+            setupEventListeners() {
+                // Eventos de ventana
+                window.addEventListener('resize', () => {
+                    this.handleResize();
+                    // Actualizar UI si hay un modelo cargado
+                    if (this.currentModel) {
+                        this.updateUIInfo(this.currentModel.name, this.currentModel.description);
+                    }
+                });
+
+                // Eventos de controles
+                const controls = {
+                    rotate: () => {
+                        this.isAutoRotating = !this.isAutoRotating;
+                        this.controls.autoRotate = this.isAutoRotating;
+                        document.getElementById('rotate').classList.toggle('active');
+                    },
+                    'zoom-fit': () => {
+                        if (this.model) this.adjustCameraToModel();
+                    },
+                    wireframe: () => {
+                        this.isWireframe = !this.isWireframe;
+                        if (this.model) {
+                            this.model.traverse((child) => {
+                                if (child.isMesh) {
+                                    child.material.wireframe = this.isWireframe;
+                                }
+                            });
+                        }
+                        document.getElementById('wireframe').classList.toggle('active');
+                    },
+                    lights: () => {
+                        this.currentLightMode = (this.currentLightMode + 1) % this.lightModes.length;
+                        const currentMode = this.lightModes[this.currentLightMode];
+                        this.setupLighting(currentMode);
+                        this.updateLightModeIndicator(currentMode);
+                    },
+                    screenshot: () => {
+                        try {
+                            this.renderer.render(this.scene, this.camera);
+                            const link = document.createElement('a');
+                            link.download = 'modelo-3d.png';
+                            link.href = this.renderer.domElement.toDataURL('image/png');
+                            link.click();
+                        } catch (error) {
+                            console.error('Error al capturar la pantalla:', error);
+                        }
+                    }
+                };
+
+                // Configurar eventos de botones
+                Object.entries(controls).forEach(([id, handler]) => {
+                    document.getElementById(id)?.addEventListener('click', handler);
+                });
+            }
 
 
             addModelToScene() {
