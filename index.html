@@ -6,45 +6,167 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Visor 3D CZA</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <link href="css/style.css" rel="stylesheet">
+    <link href="css/styles.css" rel="stylesheet">
 </head>
 
 <body>
-
     <div id="container"></div>
 
     <div id="loading-screen">
         <div class="loader"></div>
-        <div id="loading-text">Cargando modelo...</div>
+        <div id="loading-text">Cargando producto...</div>
+        <div class="loading-dots">
+            <div class="loading-dot"></div>
+            <div class="loading-dot"></div>
+            <div class="loading-dot"></div>
+        </div>
+        <div class="loading-brand">CONSTRUCTORA ZAMORA</div>
     </div>
 
-    <div id="model-info">
-        <h3 id="model-name"><i class="fas fa-cube"></i> Nombre del Modelo</h3>
-        <p id="model-details"><i class="fas fa-info-circle"></i> Detalles adicionales del modelo se muestran aquí.</p>
+    <div id="product-info">
+        <div id="product-name">Cargando...</div>
+        <div id="product-description">Preparando visualización del producto</div>
     </div>
 
-    <div id="light-mode-indicator">Modo: Estudio</div>
+    <div id="tech-specs">
+        <h4><i class="fas fa-cog"></i> Especificaciones</h4>
+        <div class="spec-item">
+            <div class="spec-icon">
+                <i class="fas fa-weight-hanging"></i>
+            </div>
+            <div class="spec-content">
+                <span class="spec-label">Peso</span>
+                <span class="spec-value">18.5 kg</span>
+            </div>
+        </div>
+        <div class="spec-item">
+            <div class="spec-icon">
+                <i class="fas fa-ruler-horizontal"></i>
+            </div>
+            <div class="spec-content">
+                <span class="spec-label">Longitud</span>
+                <span class="spec-value">40 cm</span>
+            </div>
+        </div>
+        <div class="spec-item">
+            <div class="spec-icon">
+                <i class="fas fa-ruler-vertical"></i>
+            </div>
+            <div class="spec-content">
+                <span class="spec-label">Altura</span>
+                <span class="spec-value">20 cm</span>
+            </div>
+        </div>
+        <div class="spec-item">
+            <div class="spec-icon">
+                <i class="fas fa-cube"></i>
+            </div>
+            <div class="spec-content">
+                <span class="spec-label">Ancho</span>
+                <span class="spec-value">19.5 cm</span>
+            </div>
+        </div>
+        <div class="spec-item">
+            <div class="spec-icon">
+                <i class="fas fa-hammer"></i>
+            </div>
+            <div class="spec-content">
+                <span class="spec-label">Resistencia</span>
+                <span class="spec-value">180 kg/cm²</span>
+            </div>
+        </div>
+    </div>
 
-    <div id="controls-panel">
-        <button class="control-button" id="rotate" title="Autorotación">
+    <button id="specs-toggle" title="Ver especificaciones">
+        <i class="fas fa-info"></i>
+    </button>
+
+    <div id="specs-overlay" class="specs-overlay"></div>
+
+    <div id="color-selector">
+        <div class="color-option color-original active" data-color="original">
+            <div class="color-label">Original</div>
+        </div>
+        <div class="color-option color-amarillo" data-color="amarillo">
+            <div class="color-label">Amarillo</div>
+        </div>
+        <div class="color-option color-vino" data-color="vino">
+            <div class="color-label">Vino</div>
+        </div>
+    </div>
+
+    <div id="simple-controls">
+        <button class="simple-btn active" id="rotate" title="Rotación automática">
             <i class="fas fa-sync-alt"></i>
         </button>
-        <button class="control-button" id="zoom-fit" title="Ajustar a pantalla">
-            <i class="fas fa-expand"></i>
+        <button class="simple-btn" id="reset-view" title="Vista inicial">
+            <i class="fas fa-home"></i>
         </button>
-        <button class="control-button" id="wireframe" title="Modo wireframe">
-            <i class="fas fa-vector-square"></i>
-        </button>
-        <button class="control-button" id="lights" title="Cambiar iluminación">
-            <i class="fas fa-lightbulb"></i>
-        </button>
-        <button class="control-button" id="screenshot" title="Captura de pantalla">
-            <i class="fas fa-camera"></i>
-        </button>
-
-
     </div>
 
+    <div id="instructions">
+        Arrastra para rotar • Pellizca para zoom • Colores a la derecha • (i) para detalles
+    </div>
+
+    <div class="company-logo">Constructora Zamora</div>
+
+    <!-- Botón WhatsApp flotante -->
+    <div id="whatsapp-btn" class="whatsapp-btn" title="Solicitar cotización">
+        <i class="fab fa-whatsapp"></i>
+        <span>Cotizar</span>
+    </div>
+
+    <!-- Modal de cotización -->
+    <div id="quote-modal" class="quote-modal">
+        <div class="quote-content">
+            <div class="quote-header">
+                <h3><i class="fab fa-whatsapp"></i> Solicitar Cotización</h3>
+                <button id="close-quote" class="close-quote">&times;</button>
+            </div>
+            <div class="quote-body">
+                <div class="quote-product-info">
+                    <div class="quote-product-name" id="quote-product-name">Block con Figura</div>
+                    <div class="quote-current-selection">
+                        <div class="current-color">
+                            Color actual: <span id="quote-color">Original</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="quote-form">
+                    <label for="quantity-input">Cantidad para este color:</label>
+                    <div class="quantity-controls">
+                        <button type="button" id="decrease-qty" class="qty-btn">-</button>
+                        <input type="number" id="quantity-input" value="1" min="1" max="9999">
+                        <button type="button" id="increase-qty" class="qty-btn">+</button>
+                    </div>
+                    
+                    <div class="quote-actions">
+                        <button id="add-to-cart" class="add-to-cart-btn">
+                            <i class="fas fa-plus"></i>
+                            Agregar al pedido
+                        </button>
+                    </div>
+                    
+                    <!-- Carrito de productos -->
+                    <div id="quote-cart" class="quote-cart" style="display: none;">
+                        <h4><i class="fas fa-shopping-cart"></i> Tu pedido:</h4>
+                        <div id="cart-items" class="cart-items"></div>
+                        <div class="cart-total">
+                            <strong>Total: <span id="cart-total-qty">0</span> piezas</strong>
+                        </div>
+                    </div>
+                    
+                    <button id="send-whatsapp" class="send-whatsapp-btn">
+                        <i class="fab fa-whatsapp"></i>
+                        <span id="whatsapp-btn-text">Enviar por WhatsApp</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="quote-overlay" class="quote-overlay"></div>
 
     <script async src="https://unpkg.com/es-module-shims/dist/es-module-shims.js"></script>
     <script type="importmap">
@@ -57,576 +179,1175 @@
 </script>
 
     <script type="module">
-        estudio: () => {
-            // Luz de ambiente básica (neutra) para iluminar de manera uniforme
-            const ambientLight = new THREE.AmbientLight(0xffffff, 0.45); // Luz blanca neutra
-
-            // Luz principal (Key Light) para destacar suavemente
-            const keyLight = new THREE.DirectionalLight(0xffffff, 0.6);
-            keyLight.position.set(2, 3, 5); // Luz desde arriba y adelante
-
-            // Evitar sombras duras
-            keyLight.castShadow = false;
-
-            // Agregar las luces a la escena
-            this.scene.add(ambientLight, keyLight);
-        }
-
-        // Importaciones necesarias
         import * as THREE from 'three';
         import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
         import { OBJLoader } from 'three/addons/loaders/OBJLoader.js';
         import { MTLLoader } from 'three/addons/loaders/MTLLoader.js';
 
-
-        // Gestor de recursos
-        class ResourceManager {
-    constructor() {
-        this.cache = new Map();
-        this.modelCache = new ModelCache();
-        this.loaders = {
-            obj: new OBJLoader(),
-            mtl: new MTLLoader()
-        };
-        this.setupProgressHandlers();
-    }
-
-    setupProgressHandlers() {
-        this.loaders.obj.manager.onProgress = (url, loaded, total) => {
-            const progress = (loaded / total * 100).toFixed(0);
-            const loadingText = document.getElementById('loading-text');
-            if (loadingText) {
-                loadingText.textContent = `Cargando modelo... ${progress}%`;
-            }
-        };
-
-        this.loaders.mtl.manager.onProgress = (url, loaded, total) => {
-            const progress = (loaded / total * 100).toFixed(0);
-            const loadingText = document.getElementById('loading-text');
-            if (loadingText) {
-                loadingText.textContent = `Cargando materiales... ${progress}%`;
-            }
-        };
-    }
-
-    async loadModel(modelPath, mtlPath) {
-        try {
-            const cacheKey = `${modelPath}-${mtlPath}`;
-
-            // Verificar caché en memoria
-            if (this.cache.has(cacheKey)) {
-                console.log('Modelo recuperado de caché en memoria');
-                return this.cache.get(cacheKey).clone();
-            }
-
-            // Verificar IndexedDB
-            const cachedModel = await this.modelCache.get(cacheKey);
-            if (cachedModel) {
-                console.log('Modelo recuperado de IndexedDB');
-                const loader = new THREE.ObjectLoader();
-                const model = await loader.parseAsync(cachedModel);
-                this.cache.set(cacheKey, model.clone());
-                return model;
-            }
-
-            // Si no está en caché, cargar desde el servidor
-            console.log('Cargando modelo desde servidor');
-            const materials = await this.loaders.mtl.loadAsync(mtlPath);
-            materials.preload();
-            this.loaders.obj.setMaterials(materials);
-            const model = await this.loaders.obj.loadAsync(modelPath);
-
-            // Optimizar el modelo
-            model.traverse(child => {
-                if (child.isMesh) {
-                    child.geometry.computeVertexNormals();
-                    child.geometry.computeBoundingSphere();
-
-                    if (child.material) {
-                        child.material.dispose();
-                    }
-                }
-            });
-
-            // Guardar en ambas cachés
-            this.cache.set(cacheKey, model.clone());
-            try {
-                await this.modelCache.set(cacheKey, model.toJSON());
-                console.log('Modelo guardado en IndexedDB');
-            } catch (error) {
-                console.warn('Error al guardar en IndexedDB:', error);
-            }
-
-            return model;
-        } catch (error) {
-            console.error('Error detallado:', error);
-            throw new Error(`Error cargando modelo: ${error.message}`);
-        }
-    }
-}
-
-        // Crear una nueva clase para manejar IndexedDB
-        class ModelCache {
+        class SimpleProductViewer {
             constructor() {
-                this.dbName = 'ModelViewerCache';
-                this.dbVersion = 1;
-                this.storeName = 'models';
-                this.db = null;
-                this.initDatabase();
-            }
-
-            async initDatabase() {
-                try {
-                    return new Promise((resolve, reject) => {
-                        const request = indexedDB.open(this.dbName, this.dbVersion);
-
-                        request.onerror = () => reject(request.error);
-                        request.onsuccess = () => {
-                            this.db = request.result;
-                            resolve();
-                        };
-
-                        request.onupgradeneeded = (event) => {
-                            const db = event.target.result;
-                            if (!db.objectStoreNames.contains(this.storeName)) {
-                                db.createObjectStore(this.storeName);
-                            }
-                        };
-                    });
-                } catch (error) {
-                    console.warn('Error inicializando IndexedDB:', error);
-                }
-            }
-
-            async get(key) {
-                if (!this.db) await this.initDatabase();
-
-                return new Promise((resolve, reject) => {
-                    const transaction = this.db.transaction(this.storeName, 'readonly');
-                    const store = transaction.objectStore(this.storeName);
-                    const request = store.get(key);
-
-                    request.onerror = () => reject(request.error);
-                    request.onsuccess = () => resolve(request.result);
-                });
-            }
-
-            async set(key, value) {
-                if (!this.db) await this.initDatabase();
-
-                return new Promise((resolve, reject) => {
-                    const transaction = this.db.transaction(this.storeName, 'readwrite');
-                    const store = transaction.objectStore(this.storeName);
-                    const request = store.put(value, key);
-
-                    request.onerror = () => reject(request.error);
-                    request.onsuccess = () => resolve();
-                });
-            }
-        }
-        // Configuración principal
-        class ModelViewer {
-            constructor() {
-                // Variables de estado
                 this.scene = null;
                 this.camera = null;
                 this.renderer = null;
                 this.controls = null;
                 this.model = null;
-                this.resourceManager = new ResourceManager();
+                this.isAutoRotating = true; // Empezar girando
+                this.originalCameraPosition = null;
+                this.originalControlsTarget = null;
+                this.inactivityTimer = null;
+                this.inactivityDelay = 10000; // 10 segundos
 
-                // Estados de control
-                this.isAutoRotating = true; // Activa la rotación automática por defecto
-                this.isWireframe = false;
-                this.currentLightMode = 0;
-                this.lightModes = ['estudio', 'exterior', 'cálido', 'frío'];
+                // Variables para el cambio de color
+                this.currentColor = 'original';
+                this.originalMaterials = new Map();
+                this.colorPalette = {
+                    original: null, // Se definirá cuando cargue el modelo
+                    amarillo: new THREE.Color(0xFFD700), // Oro elegante
+                    vino: new THREE.Color(0xE57373) // Vino mucho más claro y visible
+                };
 
-                // Obtener ID del modelo
+                // Variables para cotización WhatsApp
+                this.productName = 'Block con Figura';
+                this.whatsappNumber = '522811975587';
+                
+                // Sistema de carrito múltiple
+                this.cart = []; // Array para almacenar múltiples productos/colores
+
+                // Configuración simple
+                this.isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+                
+                // Variables para gestos mejorados
+                this.lastTouchTime = 0;
+                this.touchStartDistance = 0;
+                this.isDoubleTapZooming = false;
+                
+                // Obtener modelo de la URL
                 const urlParams = new URLSearchParams(window.location.search);
-                this.modelId = urlParams.get('model');
+                this.modelId = urlParams.get('model') || 'model1';
+
+                this.init();
             }
 
-            async initialize() {
+            async init() {
                 this.setupScene();
                 this.setupCamera();
                 this.setupRenderer();
                 this.setupControls();
-                this.setupLighting('estudio');
+                this.setupLighting();
                 this.setupEventListeners();
-                await this.loadModel();
+                await this.loadProduct();
                 this.animate();
+                this.hideInstructionsAfterDelay();
             }
 
             setupScene() {
                 this.scene = new THREE.Scene();
-                this.scene.background = new THREE.Color('#1a1a2e');
+                
+                // Fondo elegante que complementa el diseño
+                this.scene.background = new THREE.Color('#34495e');
+                
+                // Agregar fog sutil para profundidad
+                this.scene.fog = new THREE.Fog('#34495e', 20, 100);
             }
 
             setupCamera() {
-                this.camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-                this.camera.position.z = 5;
+                this.camera = new THREE.PerspectiveCamera(
+                    45, // FOV más pequeño para mejor vista inicial
+                    window.innerWidth / window.innerHeight,
+                    0.1,
+                    1000
+                );
+                this.camera.position.set(4, 3, 6); // Posición más alejada inicialmente
             }
 
             setupRenderer() {
-                this.renderer = new THREE.WebGLRenderer({ antialias: true });
+                this.renderer = new THREE.WebGLRenderer({ 
+                    antialias: !this.isMobile,
+                    alpha: true,
+                    powerPreference: 'high-performance'
+                });
+                
                 this.renderer.setSize(window.innerWidth, window.innerHeight);
-                this.renderer.setPixelRatio(window.devicePixelRatio);
+                this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, this.isMobile ? 1.5 : 2));
                 this.renderer.outputEncoding = THREE.sRGBEncoding;
                 this.renderer.toneMapping = THREE.ACESFilmicToneMapping;
+                this.renderer.toneMappingExposure = 1.0;
+                
+                // Desactivar sombras para mejor visibilidad
+                this.renderer.shadowMap.enabled = false;
+                this.renderer.physicallyCorrectLights = true;
+                
+                // Configuración adicional para realismo
+                this.renderer.gammaFactor = 2.2;
+                this.renderer.gammaOutput = true;
+                
                 document.getElementById('container').appendChild(this.renderer.domElement);
             }
 
             setupControls() {
                 this.controls = new OrbitControls(this.camera, this.renderer.domElement);
-
                 this.controls.enableDamping = true;
-                this.controls.dampingFactor = 0.05;
-                this.controls.maxDistance = 10;
+                this.controls.dampingFactor = 0.08;
+                
+                // Sin autoRotate de Three.js - usaremos rotación manual
+                this.controls.autoRotate = false;
+                
+                // Límites suaves
+                this.controls.maxDistance = 15;
                 this.controls.minDistance = 2;
+                this.controls.maxPolarAngle = Math.PI / 1.5;
+                
+                // Configuración móvil
+                if (this.isMobile) {
+                    this.controls.enablePan = false;
+                    this.controls.touches = {
+                        ONE: THREE.TOUCH.ROTATE,
+                        TWO: THREE.TOUCH.DOLLY_PAN
+                    };
+                }
 
-                this.controls.minPolarAngle = 0;
-                this.controls.maxPolarAngle = Math.PI / 2;
-
+                // Detener rotación manual al interactuar
                 this.controls.addEventListener('start', () => {
-                    this.isAutoRotating = false; // Detiene la rotación automática si el usuario interactúa
+                    this.stopAutoRotation();
                 });
+
+                // Reiniciar timer al finalizar interacción
+                this.controls.addEventListener('end', () => {
+                    this.startInactivityTimer();
+                });
+
+                // Estado inicial - girando
+                this.isAutoRotating = true;
             }
 
-            setupLighting(mode) {
-                // Limpiar luces existentes
-                this.scene.children.forEach(child => {
-                    if (child.isLight) this.scene.remove(child);
-                });
+            startAutoRotation() {
+                this.isAutoRotating = true;
+                this.clearInactivityTimer();
+                
+                // Actualizar botón de rotación
+                const rotateBtn = document.getElementById('rotate');
+                if (rotateBtn) {
+                    rotateBtn.classList.add('active');
+                }
+            }
 
-                // Configuración de los modos de iluminación
-                const lightSetups = {
-                    estudio: () => {
-                        // Luz de ambiente básica (neutra) para iluminar de manera uniforme
-                        const ambientLight = new THREE.AmbientLight(0xffffff, 0.8); // Luz blanca neutra
+            stopAutoRotation() {
+                this.isAutoRotating = false;
+                
+                // Actualizar botón de rotación
+                const rotateBtn = document.getElementById('rotate');
+                if (rotateBtn) {
+                    rotateBtn.classList.remove('active');
+                }
+            }
 
-                        // Luz principal (Key Light) para destacar suavemente
-                        const keyLight = new THREE.DirectionalLight(0xffffff, 0.5);
-                        keyLight.position.set(2, 3, 5); // Luz desde arriba y adelante
+            startInactivityTimer() {
+                this.clearInactivityTimer();
+                this.inactivityTimer = setTimeout(() => {
+                    this.isAutoRotating = true;
+                    const rotateBtn = document.getElementById('rotate');
+                    if (rotateBtn) {
+                        rotateBtn.classList.add('active');
+                    }
+                }, this.inactivityDelay);
+            }
 
-                        // Evitar sombras duras
-                        keyLight.castShadow = false;
+            resetInactivityTimer() {
+                if (this.inactivityTimer) {
+                    this.clearInactivityTimer();
+                    this.startInactivityTimer();
+                }
+            }
 
-                        // Agregar las luces a la escena
-                        this.scene.add(ambientLight, keyLight);
-                    },
-                    exterior: () => {
-                        this.scene.add(new THREE.AmbientLight(0x90c0ff, 0.5));
-                        const sun = new THREE.DirectionalLight(0xffffff, 1.5);
-                        sun.position.set(5, 5, 5);
-                        this.scene.add(sun);
-                    },
-                    cálido: () => {
-                        this.scene.add(new THREE.AmbientLight(0xffccaa, 0.5));
-                        const warmLight = new THREE.PointLight(0xff9966, 1);
-                        warmLight.position.set(3, 3, 3);
-                        this.scene.add(warmLight);
-                    },
-                    frío: () => {
-                        this.scene.add(new THREE.AmbientLight(0xaaccff, 0.5));
-                        const coolLight = new THREE.PointLight(0x6699ff, 1);
-                        coolLight.position.set(3, 3, 3);
-                        this.scene.add(coolLight);
+            clearInactivityTimer() {
+                if (this.inactivityTimer) {
+                    clearTimeout(this.inactivityTimer);
+                    this.inactivityTimer = null;
+                }
+            }
+
+            // Funciones de vibración háptica
+            triggerHapticFeedback(type = 'light') {
+                if (!this.isMobile) return;
+                
+                try {
+                    // Vibration API - disponible en la mayoría de móviles
+                    if (navigator.vibrate) {
+                        switch(type) {
+                            case 'light':
+                                navigator.vibrate(10); // Vibración suave
+                                break;
+                            case 'medium':
+                                navigator.vibrate(25); // Vibración media
+                                break;
+                            case 'heavy':
+                                navigator.vibrate([50, 10, 50]); // Vibración fuerte con patrón
+                                break;
+                            case 'success':
+                                navigator.vibrate([25, 10, 25]); // Vibración de éxito
+                                break;
+                        }
+                    }
+                } catch (error) {
+                    // Silenciar errores de vibración
+                    console.debug('Haptic feedback not available');
+                }
+            }
+
+            // Funciones de gestos mejorados
+            handleDoubleTap(event) {
+                const currentTime = new Date().getTime();
+                const tapLength = currentTime - this.lastTouchTime;
+                
+                if (tapLength < 500 && tapLength > 0) {
+                    // Es un doble tap
+                    event.preventDefault();
+                    this.zoomToPoint(event);
+                    this.triggerHapticFeedback('medium');
+                    this.isDoubleTapZooming = true;
+                    
+                    // Resetear flag después de un momento
+                    setTimeout(() => {
+                        this.isDoubleTapZooming = false;
+                    }, 1000);
+                }
+                
+                this.lastTouchTime = currentTime;
+            }
+
+            zoomToPoint(event) {
+                // Obtener punto de toque en coordenadas de pantalla
+                const rect = this.renderer.domElement.getBoundingClientRect();
+                const x = ((event.clientX || event.touches[0].clientX) - rect.left) / rect.width * 2 - 1;
+                const y = -((event.clientY || event.touches[0].clientY) - rect.top) / rect.height * 2 + 1;
+
+                // Crear raycaster para encontrar el punto 3D
+                const raycaster = new THREE.Raycaster();
+                raycaster.setFromCamera(new THREE.Vector2(x, y), this.camera);
+
+                if (this.model) {
+                    const intersects = raycaster.intersectObject(this.model, true);
+                    
+                    if (intersects.length > 0) {
+                        // Zoom hacia el punto seleccionado
+                        const point = intersects[0].point;
+                        this.animateToPoint(point);
+                    } else {
+                        // Si no hay intersección, hacer zoom general
+                        this.animateToDistance(this.controls.minDistance + 1);
+                    }
+                }
+            }
+
+            animateToPoint(targetPoint) {
+                const startPosition = this.camera.position.clone();
+                const direction = targetPoint.clone().sub(this.camera.position).normalize();
+                const distance = 3; // Distancia de zoom
+                const endPosition = targetPoint.clone().sub(direction.multiplyScalar(distance));
+
+                let progress = 0;
+                const animate = () => {
+                    progress += 0.03;
+                    if (progress <= 1) {
+                        this.camera.position.lerpVectors(startPosition, endPosition, progress);
+                        this.controls.target.lerp(targetPoint, progress * 0.5);
+                        this.controls.update();
+                        requestAnimationFrame(animate);
                     }
                 };
+                animate();
+            }
 
-                // Ejecutar el modo seleccionado
-                if (lightSetups[mode]) {
-                    lightSetups[mode]();
+            animateToDistance(targetDistance) {
+                const startDistance = this.camera.position.distanceTo(this.controls.target);
+                const direction = this.camera.position.clone().sub(this.controls.target).normalize();
+                
+                let progress = 0;
+                const animate = () => {
+                    progress += 0.03;
+                    if (progress <= 1) {
+                        const currentDistance = THREE.MathUtils.lerp(startDistance, targetDistance, progress);
+                        this.camera.position.copy(this.controls.target).add(direction.clone().multiplyScalar(currentDistance));
+                        this.controls.update();
+                        requestAnimationFrame(animate);
+                    }
+                };
+                animate();
+            }
+
+            // Manejo mejorado de orientación
+            handleOrientationChange() {
+                // Pequeño delay para que la orientación se complete
+                setTimeout(() => {
+                    this.handleResize();
+                    
+                    // Ajustar controles según orientación
+                    if (window.innerHeight < window.innerWidth) {
+                        // Landscape mode
+                        this.optimizeForLandscape();
+                    } else {
+                        // Portrait mode
+                        this.optimizeForPortrait();
+                    }
+                    
+                    this.triggerHapticFeedback('light');
+                }, 100);
+            }
+
+            optimizeForLandscape() {
+                // En landscape, ajustar la sensibilidad de los controles
+                if (this.controls) {
+                    this.controls.rotateSpeed = 0.8; // Más lento en landscape
+                    this.controls.zoomSpeed = 0.8;
                 }
             }
 
-
-
-            updateLightModeIndicator(mode) {
-                const lightIndicator = document.getElementById('light-mode-indicator');
-                if (lightIndicator) {
-                    lightIndicator.textContent = `Modo: ${mode.charAt(0).toUpperCase() + mode.slice(1)}`;
+            optimizeForPortrait() {
+                // En portrait, sensibilidad normal
+                if (this.controls) {
+                    this.controls.rotateSpeed = 1.0;
+                    this.controls.zoomSpeed = 1.0;
                 }
             }
 
+            setupLighting() {
+                // Iluminación clara sin sombras
+                const ambientLight = new THREE.AmbientLight(0xffffff, 0.8); // Más luz ambiental
+                this.scene.add(ambientLight);
 
+                // Luz principal sin sombras
+                const mainLight = new THREE.DirectionalLight(0xffffff, 0.8);
+                mainLight.position.set(10, 15, 8);
+                mainLight.castShadow = false;
+                this.scene.add(mainLight);
 
-            async loadModel() {
+                // Luz de relleno suave
+                const fillLight = new THREE.DirectionalLight(0x87ceeb, 0.4);
+                fillLight.position.set(-8, 10, -12);
+                fillLight.castShadow = false;
+                this.scene.add(fillLight);
+
+                // Luz de contorno para definir bordes
+                const rimLight = new THREE.DirectionalLight(0xffffff, 0.4);
+                rimLight.position.set(-12, 2, 12);
+                rimLight.castShadow = false;
+                this.scene.add(rimLight);
+
+                // Luz hemisférica para realismo
+                const hemiLight = new THREE.HemisphereLight(0x87ceeb, 0x2c3e50, 0.3);
+                this.scene.add(hemiLight);
+            }
+
+            async loadProduct() {
                 try {
-                    const modelData = await this.fetchModelData();
-                    if (!modelData) return;
+                    this.updateLoadingText('Obteniendo información del producto...');
+                    const productData = await this.getProductData();
+                    this.updateProductInfo(productData.name, productData.description);
+                    this.updateTechSpecs(productData.specs);
 
-                    const { file, mtl, name, description } = modelData;
-                    this.updateUIInfo(name, description);
+                    this.updateLoadingText('Cargando materiales...');
+                    const mtlLoader = new MTLLoader();
+                    const materials = await mtlLoader.loadAsync(`models/${productData.mtl}`);
+                    materials.preload();
 
-                    // Cargar modelo
-                    this.model = await this.resourceManager.loadModel(
-                        `github_upload/${file}`,
-                        `github_upload/${mtl}`
-                    );
+                    this.updateLoadingText('Cargando modelo 3D...');
+                    const objLoader = new OBJLoader();
+                    objLoader.setMaterials(materials);
+                    this.model = await objLoader.loadAsync(`models/${productData.file}`);
 
-                    this.addModelToScene();
-                    this.adjustCameraToModel();
-                    this.hideLoadingScreen();
+                    this.updateLoadingText('Optimizando modelo...');
+                    this.optimizeModel();
+                    this.addToScene();
+                    this.fitModelToView();
+                    
+                    this.updateLoadingText('¡Producto listo!');
+                    setTimeout(() => {
+                        this.hideLoading();
+                    }, 500);
 
                 } catch (error) {
-                    this.handleError(error);
+                    console.error('Error cargando producto:', error);
+                    this.showError('Error al cargar el producto');
                 }
             }
 
+            updateLoadingText(text) {
+                const loadingText = document.getElementById('loading-text');
+                if (loadingText) {
+                    loadingText.textContent = text;
+                }
+            }
 
-            async fetchModelData() {
+            async getProductData() {
                 try {
-                    const response = await fetch('github_upload/data/models.json');
+                    const response = await fetch('data/models.json');
                     const data = await response.json();
-                    const modelData = data.models[this.modelId];
-                    // Guardar los datos del modelo actual
-                    this.currentModel = modelData;
-                    return modelData;
+                    return data.models[this.modelId] || {
+                        id: 'model1',
+                        name: 'Block con Figura',
+                        description: 'Block decorativo disponible en varios colores',
+                        file: '3DModel.obj',
+                        mtl: '3DModel.mtl',
+                        specs: {
+                            weight: '18.5 kg',
+                            length: '40 cm',
+                            height: '20 cm',
+                            width: '19.5 cm',
+                            resistance: '180 kg/cm²'
+                        }
+                    };
                 } catch (error) {
-                    console.error('Error al cargar datos del modelo:', error);
                     return {
-                        id: 'unknown',
-                        name: 'Modelo Desconocido',
-                        description: 'Descripción no disponible'
+                        id: 'model1',
+                        name: 'Block con Figura',
+                        description: 'Block decorativo disponible en varios colores',
+                        file: '3DModel.obj',
+                        mtl: '3DModel.mtl',
+                        specs: {
+                            weight: '18.5 kg',
+                            length: '40 cm',
+                            height: '20 cm',
+                            width: '19.5 cm',
+                            resistance: '180 kg/cm²'
+                        }
                     };
                 }
             }
 
-            async loadModel() {
-                try {
-                    const modelData = await this.fetchModelData();
-                    if (!modelData) return;
-
-                    const { file, mtl, name, description } = modelData;
-                    this.updateUIInfo(name, description);
-
-                    // Cargar modelo
-                    this.model = await this.resourceManager.loadModel(
-                        `github_upload/${file}`,
-                        `github_upload/${mtl}`
-                    );
-
-                    this.addModelToScene();
-                    this.adjustCameraToModel();
-                    this.hideLoadingScreen();
-
-                } catch (error) {
-                    this.handleError(error);
+            updateTechSpecs(specs) {
+                const specValues = document.querySelectorAll('.spec-value');
+                if (specs && specValues.length >= 5) {
+                    specValues[0].textContent = specs.weight || '18.5 kg';
+                    specValues[1].textContent = specs.length || '40 cm';
+                    specValues[2].textContent = specs.height || '20 cm';
+                    specValues[3].textContent = specs.width || '19.5 cm';
+                    specValues[4].textContent = specs.resistance || '180 kg/cm²';
                 }
             }
 
-            updateUIInfo(name, description) {
-                const nameElement = document.getElementById('model-name');
-                const detailsElement = document.getElementById('model-details');
+            optimizeModel() {
+                this.model.traverse(child => {
+                    if (child.isMesh) {
+                        // Sin configuración de sombras para mejor visibilidad
+                        child.castShadow = false;
+                        child.receiveShadow = false;
+                        
+                        if (child.geometry) {
+                            child.geometry.computeVertexNormals();
+                            child.geometry.computeBoundingSphere();
+                            child.geometry.computeBoundingBox();
+                        }
 
-                // Detectar si estamos en móvil
-                const isMobile = window.innerWidth <= 768;
-
-                if (isMobile) {
-                    // En móvil: nombre en una línea, descripción en dos líneas si es necesario
-                    const processedName = this.truncateText(name, 17); // Una línea para el nombre
-
-                    // Para la descripción, permitimos más caracteres ya que puede usar dos líneas
-                    const processedDescription = this.truncateText(description, 60); // Aproximadamente dos líneas
-
-                    nameElement.textContent = processedName;
-                    detailsElement.textContent = processedDescription;
-                } else {
-                    // En desktop mantenemos el comportamiento original
-                    nameElement.textContent = name;
-                    detailsElement.textContent = this.truncateText(description, 100);
-                }
-            }
-
-            truncateText(text, maxLength) {
-                if (!text) return '';
-                if (text.length <= maxLength) return text;
-
-                // Buscar el último espacio antes del límite para no cortar palabras
-                const lastSpace = text.lastIndexOf(' ', maxLength);
-                if (lastSpace > 0) {
-                    return text.slice(0, lastSpace) + '...';
-                }
-                return text.slice(0, maxLength) + '...';
-            }
-
-            setupEventListeners() {
-                // Eventos de ventana
-                window.addEventListener('resize', () => {
-                    this.handleResize();
-                    // Actualizar UI si hay un modelo cargado
-                    if (this.currentModel) {
-                        this.updateUIInfo(this.currentModel.name, this.currentModel.description);
+                        // Guardar materiales originales y mejorar para más realismo
+                        if (child.material) {
+                            if (Array.isArray(child.material)) {
+                                child.material.forEach((mat, index) => {
+                                    this.originalMaterials.set(`${child.uuid}_${index}`, mat.clone());
+                                    this.enhanceMaterial(mat);
+                                });
+                            } else {
+                                this.originalMaterials.set(child.uuid, child.material.clone());
+                                this.enhanceMaterial(child.material);
+                            }
+                        }
                     }
                 });
+            }
 
-                // Eventos de controles
-                const controls = {
-                    rotate: () => {
-                        this.isAutoRotating = !this.isAutoRotating;
-                        this.controls.autoRotate = this.isAutoRotating;
-                        document.getElementById('rotate').classList.toggle('active');
-                    },
-                    'zoom-fit': () => {
-                        if (this.model) this.adjustCameraToModel();
-                    },
-                    wireframe: () => {
-                        this.isWireframe = !this.isWireframe;
-                        if (this.model) {
-                            this.model.traverse((child) => {
-                                if (child.isMesh) {
-                                    child.material.wireframe = this.isWireframe;
+            changeModelColor(colorName) {
+                if (!this.model) return;
+
+                this.currentColor = colorName;
+
+                this.model.traverse(child => {
+                    if (child.isMesh && child.material) {
+                        if (Array.isArray(child.material)) {
+                            child.material.forEach((mat, index) => {
+                                if (colorName === 'original') {
+                                    // Restaurar material original
+                                    const originalMat = this.originalMaterials.get(`${child.uuid}_${index}`);
+                                    if (originalMat) {
+                                        child.material[index] = originalMat.clone();
+                                        this.enhanceMaterial(child.material[index]);
+                                    }
+                                } else {
+                                    // Aplicar nuevo color
+                                    mat.color.copy(this.colorPalette[colorName]);
+                                    mat.needsUpdate = true;
                                 }
                             });
-                        }
-                        document.getElementById('wireframe').classList.toggle('active');
-                    },
-                    lights: () => {
-                        this.currentLightMode = (this.currentLightMode + 1) % this.lightModes.length;
-                        const currentMode = this.lightModes[this.currentLightMode];
-                        this.setupLighting(currentMode);
-                        this.updateLightModeIndicator(currentMode);
-                    },
-                    screenshot: () => {
-                        try {
-                            this.renderer.render(this.scene, this.camera);
-                            const link = document.createElement('a');
-                            link.download = 'modelo-3d.png';
-                            link.href = this.renderer.domElement.toDataURL('image/png');
-                            link.click();
-                        } catch (error) {
-                            console.error('Error al capturar la pantalla:', error);
+                        } else {
+                            if (colorName === 'original') {
+                                // Restaurar material original
+                                const originalMat = this.originalMaterials.get(child.uuid);
+                                if (originalMat) {
+                                    child.material = originalMat.clone();
+                                    this.enhanceMaterial(child.material);
+                                }
+                            } else {
+                                // Aplicar nuevo color
+                                child.material.color.copy(this.colorPalette[colorName]);
+                                child.material.needsUpdate = true;
+                            }
                         }
                     }
-                };
+                });
 
-                // Configurar eventos de botones
-                Object.entries(controls).forEach(([id, handler]) => {
-                    document.getElementById(id)?.addEventListener('click', handler);
+                // Actualizar botones activos
+                this.updateColorButtons(colorName);
+            }
+
+            updateColorButtons(activeColor) {
+                const colorButtons = document.querySelectorAll('.color-option');
+                colorButtons.forEach(button => {
+                    const buttonColor = button.getAttribute('data-color');
+                    if (buttonColor === activeColor) {
+                        button.classList.add('active');
+                    } else {
+                        button.classList.remove('active');
+                    }
                 });
             }
 
+            enhanceMaterial(material) {
+                // Configurar material para mayor realismo
+                material.needsUpdate = true;
+                
+                // Mejorar propiedades físicas del material
+                if (material.type === 'MeshPhongMaterial' || material.type === 'MeshLambertMaterial') {
+                    // Convertir a material más realista si es posible
+                    const oldMaterial = material;
+                    material = new THREE.MeshStandardMaterial({
+                        map: oldMaterial.map,
+                        color: oldMaterial.color,
+                        transparent: oldMaterial.transparent,
+                        opacity: oldMaterial.opacity
+                    });
+                }
 
-            addModelToScene() {
+                // Configurar propiedades PBR para realismo
+                if (material.type === 'MeshStandardMaterial') {
+                    material.roughness = 0.7; // Superficie ligeramente rugosa
+                    material.metalness = 0.1; // Poco metálico para materiales de construcción
+                    material.envMapIntensity = 0.8;
+                }
+
+                // Mejorar calidad de texturas
+                if (material.map) {
+                    material.map.generateMipmaps = true;
+                    material.map.minFilter = THREE.LinearMipmapLinearFilter;
+                    material.map.magFilter = THREE.LinearFilter;
+                    material.map.anisotropy = this.renderer.capabilities.getMaxAnisotropy();
+                }
+
+                return material;
+            }
+
+            addToScene() {
                 // Limpiar modelos anteriores
-                this.scene.children.forEach(child => {
-                    if (child.type === "Group") this.scene.remove(child);
-                });
+                const existingModel = this.scene.children.find(child => child.userData.isModel);
+                if (existingModel) {
+                    this.scene.remove(existingModel);
+                }
+                
+                this.model.userData.isModel = true;
                 this.scene.add(this.model);
             }
 
-            adjustCameraToModel() {
+            fitModelToView() {
                 const box = new THREE.Box3().setFromObject(this.model);
                 const center = box.getCenter(new THREE.Vector3());
                 const size = box.getSize(new THREE.Vector3());
 
                 const maxDim = Math.max(size.x, size.y, size.z);
-                this.camera.position.z = maxDim * 2;
+                
+                // Calcular distancia óptima para vista inicial
+                const fov = this.camera.fov * (Math.PI / 180);
+                const distance = maxDim / (2 * Math.tan(fov / 2)) * 2.2; // Factor 2.2 para vista cómoda
+
+                // Posicionar cámara
+                this.camera.position.copy(center);
+                this.camera.position.x += distance * 0.6;
+                this.camera.position.y += distance * 0.4;
+                this.camera.position.z += distance * 0.8;
+
+                // Configurar controles
                 this.controls.target.copy(center);
                 this.controls.update();
+
+                // Guardar posición inicial para reset
+                this.originalCameraPosition = this.camera.position.clone();
+                this.originalControlsTarget = center.clone();
             }
 
-            hideLoadingScreen() {
-                const loadingScreen = document.getElementById('loading-screen');
-                loadingScreen.style.opacity = '0';
-                setTimeout(() => {
-                    loadingScreen.style.display = 'none';
-                }, 500);
-            }
-
-            handleError(error) {
-                console.error('Error:', error);
-                document.getElementById('loading-text').textContent = error.message;
+            updateProductInfo(name, description) {
+                const nameEl = document.getElementById('product-name');
+                const descEl = document.getElementById('product-description');
+                
+                if (nameEl && descEl) {
+                    nameEl.textContent = name;
+                    descEl.textContent = description;
+                    // Guardar el nombre del producto para WhatsApp
+                    this.productName = name;
+                }
             }
 
             setupEventListeners() {
-                // Eventos de ventana
-                window.addEventListener('resize', this.handleResize.bind(this));
+                // Redimensionar ventana
+                let resizeTimeout;
+                window.addEventListener('resize', () => {
+                    clearTimeout(resizeTimeout);
+                    resizeTimeout = setTimeout(() => this.handleResize(), 100);
+                });
 
-                // Eventos de controles
-                const controls = {
-                    rotate: () => {
-                        this.isAutoRotating = !this.isAutoRotating;
-                        this.controls.autoRotate = this.isAutoRotating;
-                        document.getElementById('rotate').classList.toggle('active');
-                    },
-                    'zoom-fit': () => {
-                        if (this.model) this.adjustCameraToModel();
-                    },
-                    wireframe: () => {
-                        this.isWireframe = !this.isWireframe;
-                        if (this.model) {
-                            this.model.traverse((child) => {
-                                if (child.isMesh) {
-                                    child.material.wireframe = this.isWireframe;
+                // Controles simples
+                document.getElementById('rotate')?.addEventListener('click', () => {
+                    this.isAutoRotating = !this.isAutoRotating;
+                    document.getElementById('rotate').classList.toggle('active', this.isAutoRotating);
+                    
+                    // Vibración háptica al activar/desactivar rotación
+                    this.triggerHapticFeedback('medium');
+                    
+                    if (this.isAutoRotating) {
+                        this.clearInactivityTimer();
+                    } else {
+                        this.startInactivityTimer();
+                    }
+                });
+
+                document.getElementById('reset-view')?.addEventListener('click', () => {
+                    this.resetView();
+                    this.resetInactivityTimer();
+                    
+                    // Vibración háptica al resetear vista
+                    this.triggerHapticFeedback('medium');
+                });
+
+                // Toggle de especificaciones en móvil
+                document.getElementById('specs-toggle')?.addEventListener('click', () => {
+                    const techSpecs = document.getElementById('tech-specs');
+                    const toggleBtn = document.getElementById('specs-toggle');
+                    const overlay = document.getElementById('specs-overlay');
+                    
+                    if (techSpecs.classList.contains('mobile-visible')) {
+                        // Cerrar especificaciones
+                        techSpecs.classList.remove('mobile-visible');
+                        toggleBtn.classList.remove('active');
+                        toggleBtn.innerHTML = '<i class="fas fa-info"></i>';
+                        overlay.classList.remove('visible');
+                    } else {
+                        // Abrir especificaciones
+                        techSpecs.classList.add('mobile-visible');
+                        toggleBtn.classList.add('active');
+                        toggleBtn.innerHTML = '<i class="fas fa-times"></i>';
+                        overlay.classList.add('visible');
+                    }
+                });
+
+                // Cerrar especificaciones al hacer clic en el overlay
+                document.getElementById('specs-overlay')?.addEventListener('click', () => {
+                    const techSpecs = document.getElementById('tech-specs');
+                    const toggleBtn = document.getElementById('specs-toggle');
+                    const overlay = document.getElementById('specs-overlay');
+                    
+                    techSpecs.classList.remove('mobile-visible');
+                    toggleBtn.classList.remove('active');
+                    toggleBtn.innerHTML = '<i class="fas fa-info"></i>';
+                    overlay.classList.remove('visible');
+                });
+
+                // Event listeners para cambio de color
+                const colorButtons = document.querySelectorAll('.color-option');
+                colorButtons.forEach(button => {
+                    button.addEventListener('click', () => {
+                        const color = button.getAttribute('data-color');
+                        this.changeModelColor(color);
+                        
+                        // Vibración háptica al cambiar color
+                        this.triggerHapticFeedback('light');
+                        
+                        // Reiniciar timer de inactividad si está parado
+                        if (!this.isAutoRotating) {
+                            this.resetInactivityTimer();
+                        }
+                    });
+                });
+
+                // Detectar actividad del usuario para reiniciar timer
+                const userActivityEvents = ['mousedown', 'mousemove', 'wheel', 'touchstart', 'touchmove'];
+                userActivityEvents.forEach(event => {
+                    this.renderer.domElement.addEventListener(event, () => {
+                        if (!this.isAutoRotating && this.inactivityTimer) {
+                            this.resetInactivityTimer();
+                        }
+                    }, { passive: true });
+                });
+
+                // Prevenir zoom en iOS
+                document.addEventListener('gesturestart', e => e.preventDefault());
+                document.addEventListener('gesturechange', e => e.preventDefault());
+
+                // Gestos mejorados para móviles
+                if (this.isMobile) {
+                    // Doble tap para zoom
+                    this.renderer.domElement.addEventListener('touchend', (e) => {
+                        if (e.touches.length === 0) { // Solo si no hay otros dedos
+                            this.handleDoubleTap(e);
+                        }
+                    });
+
+                    // Mejorar detección de pinch
+                    this.renderer.domElement.addEventListener('touchstart', (e) => {
+                        if (e.touches.length === 2) {
+                            // Calcular distancia inicial para pinch
+                            const dx = e.touches[0].clientX - e.touches[1].clientX;
+                            const dy = e.touches[0].clientY - e.touches[1].clientY;
+                            this.touchStartDistance = Math.sqrt(dx * dx + dy * dy);
+                            this.triggerHapticFeedback('light');
+                        }
+                    });
+
+                    this.renderer.domElement.addEventListener('touchmove', (e) => {
+                        if (e.touches.length === 2 && !this.isDoubleTapZooming) {
+                            // Mejorar responsividad del pinch
+                            const dx = e.touches[0].clientX - e.touches[1].clientX;
+                            const dy = e.touches[0].clientY - e.touches[1].clientY;
+                            const currentDistance = Math.sqrt(dx * dx + dy * dy);
+                            
+                            if (this.touchStartDistance > 0) {
+                                const scale = currentDistance / this.touchStartDistance;
+                                const sensitivity = 1.5; // Hacer pinch más responsivo
+                                
+                                if (Math.abs(scale - 1) > 0.1) { // Umbral para evitar micro-movimientos
+                                    const zoomDirection = scale > 1 ? -1 : 1;
+                                    const zoomAmount = Math.abs(scale - 1) * sensitivity;
+                                    
+                                    // Aplicar zoom suave
+                                    const currentDistance = this.camera.position.distanceTo(this.controls.target);
+                                    const newDistance = Math.max(
+                                        this.controls.minDistance,
+                                        Math.min(this.controls.maxDistance, currentDistance + zoomDirection * zoomAmount)
+                                    );
+                                    
+                                    const direction = this.camera.position.clone().sub(this.controls.target).normalize();
+                                    this.camera.position.copy(this.controls.target).add(direction.multiplyScalar(newDistance));
+                                    this.controls.update();
+                                    
+                                    this.touchStartDistance = currentDistance; // Actualizar referencia
                                 }
-                            });
+                            }
                         }
-                        document.getElementById('wireframe').classList.toggle('active');
-                    },
-                    lights: () => {
-                        // Cambia el modo de iluminación
-                        this.currentLightMode = (this.currentLightMode + 1) % this.lightModes.length;
-                        const currentMode = this.lightModes[this.currentLightMode];
+                    });
 
-                        // Configura la iluminación del nuevo modo
-                        this.setupLighting(currentMode);
+                    // Manejo de orientación
+                    window.addEventListener('orientationchange', () => {
+                        this.handleOrientationChange();
+                    });
 
-                        // Actualiza el indicador de modo de luz
-                        this.updateLightModeIndicator(currentMode);
-                    }
-                    ,
-                    screenshot: () => {
-                        try {
-                            // Renderiza la escena antes de capturar la imagen
-                            this.renderer.render(this.scene, this.camera);
+                    // También escuchar cambios de tamaño para detectar rotación
+                    window.addEventListener('resize', () => {
+                        this.handleOrientationChange();
+                    });
+                }
 
-                            // Crear un enlace temporal para descargar la imagen
-                            const link = document.createElement('a');
-                            link.download = 'modelo-3d.png'; // Nombre del archivo
-                            link.href = this.renderer.domElement.toDataURL('image/png'); // Captura del canvas
-                            link.click(); // Simula un clic para iniciar la descarga
-                        } catch (error) {
-                            console.error('Error al capturar la pantalla:', error);
-                        }
-                    }
+                // Event listeners para WhatsApp y cotización
+                this.setupWhatsAppListeners();
 
+                // WhatsApp - Abrir modal
+                document.getElementById('whatsapp-btn')?.addEventListener('click', () => {
+                    const quoteModal = document.getElementById('quote-modal');
+                    const quoteOverlay = document.getElementById('quote-overlay');
+                    
+                    // Actualizar información del producto en el modal
+                    document.getElementById('quote-product-name').textContent = this.modelId; // Usar ID del modelo como nombre
+                    document.getElementById('quote-color').textContent = this.currentColor.charAt(0).toUpperCase() + this.currentColor.slice(1); // Color con primera letra mayúscula
 
-                };
+                    quoteModal.classList.add('visible');
+                    quoteOverlay.classList.add('visible');
+                });
 
-                // Configurar eventos de botones
-                Object.entries(controls).forEach(([id, handler]) => {
-                    document.getElementById(id)?.addEventListener('click', handler);
+                // Cerrar modal de cotización
+                document.getElementById('close-quote')?.addEventListener('click', () => {
+                    const quoteModal = document.getElementById('quote-modal');
+                    const quoteOverlay = document.getElementById('quote-overlay');
+                    
+                    quoteModal.classList.remove('visible');
+                    quoteOverlay.classList.remove('visible');
+                });
+
+                // Enviar cotización por WhatsApp
+                document.getElementById('send-whatsapp')?.addEventListener('click', () => {
+                    const quantity = document.getElementById('quantity-input').value;
+                    const color = this.currentColor.charAt(0).toUpperCase() + this.currentColor.slice(1);
+                    const message = `Hola! Me interesa este producto:
+
+🧱 *${this.productName}*
+🎨 Color: *${color}*
+📦 Cantidad: *${quantity} piezas*
+
+¿Podrían enviarme más información y precio?
+
+Gracias!`;
+                    const whatsappUrl = `https://wa.me/${this.whatsappNumber}?text=${encodeURIComponent(message)}`;
+                    
+                    window.open(whatsappUrl, '_blank');
+                    
+                    // Cerrar modal
+                    const quoteModal = document.getElementById('quote-modal');
+                    const quoteOverlay = document.getElementById('quote-overlay');
+                    quoteModal.classList.remove('visible');
+                    quoteOverlay.classList.remove('visible');
                 });
             }
 
+            setupWhatsAppListeners() {
+                const whatsappBtn = document.getElementById('whatsapp-btn');
+                const quoteModal = document.getElementById('quote-modal');
+                const quoteOverlay = document.getElementById('quote-overlay');
+                const closeQuote = document.getElementById('close-quote');
+                const quantityInput = document.getElementById('quantity-input');
+                const decreaseBtn = document.getElementById('decrease-qty');
+                const increaseBtn = document.getElementById('increase-qty');
+                const sendWhatsappBtn = document.getElementById('send-whatsapp');
+                const addToCartBtn = document.getElementById('add-to-cart');
+
+                // Abrir modal de cotización
+                whatsappBtn?.addEventListener('click', () => {
+                    this.openQuoteModal();
+                });
+
+                // Cerrar modal
+                closeQuote?.addEventListener('click', () => {
+                    this.closeQuoteModal();
+                });
+
+                quoteOverlay?.addEventListener('click', () => {
+                    this.closeQuoteModal();
+                });
+
+                // Controles de cantidad
+                decreaseBtn?.addEventListener('click', () => {
+                    const currentValue = parseInt(quantityInput.value) || 1;
+                    if (currentValue > 1) {
+                        quantityInput.value = currentValue - 1;
+                    }
+                });
+
+                increaseBtn?.addEventListener('click', () => {
+                    const currentValue = parseInt(quantityInput.value) || 1;
+                    if (currentValue < 9999) {
+                        quantityInput.value = currentValue + 1;
+                    }
+                });
+
+                // Validar entrada de cantidad
+                quantityInput?.addEventListener('input', (e) => {
+                    let value = parseInt(e.target.value);
+                    if (isNaN(value) || value < 1) {
+                        e.target.value = 1;
+                    } else if (value > 9999) {
+                        e.target.value = 9999;
+                    }
+                });
+
+                // Agregar al carrito
+                addToCartBtn?.addEventListener('click', () => {
+                    this.addToCart();
+                });
+
+                // Enviar mensaje de WhatsApp
+                sendWhatsappBtn?.addEventListener('click', () => {
+                    this.sendWhatsAppMessage();
+                });
+            }
+
+            openQuoteModal() {
+                const quoteModal = document.getElementById('quote-modal');
+                const quoteOverlay = document.getElementById('quote-overlay');
+                const quoteProductName = document.getElementById('quote-product-name');
+                const quoteColor = document.getElementById('quote-color');
+
+                // Actualizar información del producto
+                quoteProductName.textContent = this.productName;
+                quoteColor.textContent = this.getColorDisplayName(this.currentColor);
+
+                // Mostrar modal
+                quoteOverlay.classList.add('visible');
+                quoteModal.classList.add('visible');
+                
+                // Vibración háptica al abrir modal
+                this.triggerHapticFeedback('light');
+            }
+
+            closeQuoteModal() {
+                const quoteModal = document.getElementById('quote-modal');
+                const quoteOverlay = document.getElementById('quote-overlay');
+                
+                quoteOverlay.classList.remove('visible');
+                quoteModal.classList.remove('visible');
+                
+                // Vibración háptica al cerrar modal
+                this.triggerHapticFeedback('light');
+            }
+
+            getColorDisplayName(colorKey) {
+                const colorNames = {
+                    'original': 'Original',
+                    'amarillo': 'Amarillo',
+                    'vino': 'Vino'
+                };
+                return colorNames[colorKey] || 'Original';
+            }
+
+            sendWhatsAppMessage() {
+                let message;
+                
+                if (this.cart.length > 0) {
+                    // Mensaje para múltiples productos del carrito
+                    const totalQuantity = this.cart.reduce((sum, item) => sum + item.quantity, 0);
+                    
+                    message = `Hola! Me interesa cotizar estos productos:
+
+🧱 *${this.productName}*
+
+📦 *DETALLE DEL PEDIDO:*
+${this.cart.map(item => `• ${item.colorName}: *${item.quantity} piezas*`).join('\n')}
+
+📊 *TOTAL: ${totalQuantity} piezas*
+
+¿Podrían enviarme precio y disponibilidad?
+
+Gracias!`;
+                } else {
+                    // Mensaje para un solo producto (método anterior como respaldo)
+                    const quantity = document.getElementById('quantity-input').value;
+                    const colorName = this.getColorDisplayName(this.currentColor);
+                    
+                    message = `Hola! Me interesa este producto:
+
+🧱 *${this.productName}*
+🎨 Color: *${colorName}*
+📦 Cantidad: *${quantity} piezas*
+
+¿Podrían enviarme más información y precio?
+
+Gracias!`;
+                }
+
+                const encodedMessage = encodeURIComponent(message);
+                const whatsappURL = `https://wa.me/${this.whatsappNumber}?text=${encodedMessage}`;
+                
+                // Vibración háptica de éxito al enviar
+                this.triggerHapticFeedback('success');
+                
+                // Abrir WhatsApp
+                window.open(whatsappURL, '_blank');
+                
+                // Limpiar carrito después de enviar
+                this.clearCart();
+                
+                // Cerrar modal
+                this.closeQuoteModal();
+            }
+
+            // Funciones del sistema de carrito múltiple
+            addToCart() {
+                const quantity = parseInt(document.getElementById('quantity-input').value) || 1;
+                const colorKey = this.currentColor;
+                const colorName = this.getColorDisplayName(colorKey);
+                
+                // Buscar si ya existe este color en el carrito
+                const existingItemIndex = this.cart.findIndex(item => item.color === colorKey);
+                
+                if (existingItemIndex >= 0) {
+                    // Si ya existe, sumar la cantidad
+                    this.cart[existingItemIndex].quantity += quantity;
+                } else {
+                    // Si no existe, agregar nuevo item
+                    this.cart.push({
+                        color: colorKey,
+                        colorName: colorName,
+                        quantity: quantity,
+                        productName: this.productName
+                    });
+                }
+                
+                // Actualizar la vista del carrito
+                this.updateCartDisplay();
+                
+                // Resetear cantidad a 1
+                document.getElementById('quantity-input').value = 1;
+                
+                // Vibración háptica
+                this.triggerHapticFeedback('success');
+                
+                // Mostrar mensaje de confirmación temporal
+                this.showAddToCartFeedback();
+            }
+            
+            removeFromCart(colorKey) {
+                this.cart = this.cart.filter(item => item.color !== colorKey);
+                this.updateCartDisplay();
+                this.triggerHapticFeedback('light');
+            }
+            
+            updateCartDisplay() {
+                const cartContainer = document.getElementById('quote-cart');
+                const cartItems = document.getElementById('cart-items');
+                const cartTotalQty = document.getElementById('cart-total-qty');
+                const whatsappBtnText = document.getElementById('whatsapp-btn-text');
+                const sendWhatsappBtn = document.getElementById('send-whatsapp');
+                
+                if (this.cart.length === 0) {
+                    // Ocultar carrito si está vacío
+                    cartContainer.style.display = 'none';
+                    whatsappBtnText.textContent = 'Enviar por WhatsApp';
+                    sendWhatsappBtn.classList.remove('has-cart');
+                    return;
+                }
+                
+                // Mostrar carrito
+                cartContainer.style.display = 'block';
+                
+                // Generar HTML de items del carrito
+                cartItems.innerHTML = this.cart.map(item => `
+                    <div class="cart-item">
+                        <div class="cart-item-info">
+                            <div class="cart-item-color ${item.color}"></div>
+                            <div class="cart-item-details">
+                                <div class="cart-item-name">${item.colorName}</div>
+                                <div class="cart-item-qty">${item.quantity} piezas</div>
+                            </div>
+                        </div>
+                        <div class="cart-item-actions">
+                            <button class="cart-item-btn" onclick="viewer.removeFromCart('${item.color}')" title="Eliminar">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+                `).join('');
+                
+                // Calcular total
+                const totalQuantity = this.cart.reduce((sum, item) => sum + item.quantity, 0);
+                cartTotalQty.textContent = totalQuantity;
+                
+                // Actualizar botón de WhatsApp
+                whatsappBtnText.textContent = `Enviar pedido (${totalQuantity} piezas)`;
+                sendWhatsappBtn.classList.add('has-cart');
+            }
+            
+            showAddToCartFeedback() {
+                const addToCartBtn = document.getElementById('add-to-cart');
+                const originalText = addToCartBtn.innerHTML;
+                
+                // Cambiar temporalmente el texto del botón
+                addToCartBtn.innerHTML = '<i class="fas fa-check"></i> ¡Agregado!';
+                addToCartBtn.style.background = 'linear-gradient(135deg, #27ae60 0%, #229954 100%)';
+                
+                setTimeout(() => {
+                    addToCartBtn.innerHTML = originalText;
+                    addToCartBtn.style.background = '';
+                }, 1500);
+            }
+            
+            clearCart() {
+                this.cart = [];
+                this.updateCartDisplay();
+            }
+
+            // ...existing code...
+            resetView() {
+                if (this.originalCameraPosition && this.originalControlsTarget) {
+                    // Animación suave de vuelta a la vista inicial
+                    const startPos = this.camera.position.clone();
+                    const startTarget = this.controls.target.clone();
+                    
+                    let progress = 0;
+                    const animate = () => {
+                        progress += 0.05;
+                        if (progress <= 1) {
+                            this.camera.position.lerpVectors(startPos, this.originalCameraPosition, progress);
+                            this.controls.target.lerpVectors(startTarget, this.originalControlsTarget, progress);
+                            this.controls.update();
+                            requestAnimationFrame(animate);
+                        }
+                    };
+                    animate();
+                }
+            }
+
+            hideInstructionsAfterDelay() {
+                // Actualizar texto de instrucciones según dispositivo
+                const instructions = document.getElementById('instructions');
+                if (instructions) {
+                    if (this.isMobile) {
+                        instructions.textContent = 'Toca y arrastra • Pellizca para zoom • Botón (i) para especificaciones';
+                    }
+                    
+                    setTimeout(() => {
+                        instructions.classList.add('fade-out');
+                    }, 5000); // Más tiempo para leer las instrucciones
+                }
+            }
+
+            hideLoading() {
+                const loadingScreen = document.getElementById('loading-screen');
+                if (loadingScreen) {
+                    loadingScreen.style.opacity = '0';
+                    setTimeout(() => {
+                        loadingScreen.style.display = 'none';
+                        // Asegurar que el estado inicial esté correcto
+                        this.isAutoRotating = true;
+                        const rotateBtn = document.getElementById('rotate');
+                        if (rotateBtn) {
+                            rotateBtn.classList.add('active');
+                        }
+                        
+                        // Mostrar el botón de WhatsApp después de que termine la carga
+                        const whatsappBtn = document.getElementById('whatsapp-btn');
+                        if (whatsappBtn) {
+                            whatsappBtn.classList.add('loaded');
+                        }
+                    }, 500);
+                }
+            }
+
+            showError(message) {
+                const loadingText = document.getElementById('loading-text');
+                if (loadingText) {
+                    loadingText.textContent = message;
+                    loadingText.style.color = '#dc3545';
+                }
+            }
+
             handleResize() {
-                this.camera.aspect = window.innerWidth / window.innerHeight;
+                const width = window.innerWidth;
+                const height = window.innerHeight;
+                
+                this.camera.aspect = width / height;
                 this.camera.updateProjectionMatrix();
-                this.renderer.setSize(window.innerWidth, window.innerHeight);
+                this.renderer.setSize(width, height);
             }
 
             animate() {
                 requestAnimationFrame(this.animate.bind(this));
 
-                // Rotación automática mientras no se interactúe manualmente
+                // Rotación manual del modelo (como en la versión antigua)
                 if (this.isAutoRotating && this.model) {
-                    this.model.rotation.y += 0.005; // Velocidad de rotación automática
+                    this.model.rotation.y += 0.008; // Velocidad ligeramente más rápida
                 }
 
                 this.controls.update();
                 this.renderer.render(this.scene, this.camera);
             }
-
         }
 
-        // Inicialización
-        const viewer = new ModelViewer();
-        viewer.initialize();
+        // Inicializar el visor
+        const viewer = new SimpleProductViewer();
+        
+        // Hacer el viewer accesible globalmente para las funciones del carrito
+        window.viewer = viewer;
     </script>
-
-    <div class="company-name">Constructora Zamora</div>
 </body>
 
 </html>

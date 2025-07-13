@@ -1,0 +1,18 @@
+{
+  "models": {
+    "model1": {
+      "id": "model1",
+      "name": "Block con Figura",
+      "file": "3DModel.obj",
+      "mtl": "3DModel.mtl",
+      "description": "Block con figuras, disponible en varios colores"
+    },
+    "model2": {
+      "id": "model2",
+      "name": "Block con Figura Low Poly",
+      "file": "3DModel_LowPoly.obj",
+      "mtl": "3DModel_LowPoly.mtl",
+      "description": "Versión optimizada del block con menos polígonos para mejor rendimiento"
+    }
+  }
+}
