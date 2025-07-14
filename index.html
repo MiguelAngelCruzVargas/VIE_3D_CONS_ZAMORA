@@ -168,6 +168,10 @@
 
     <div id="quote-overlay" class="quote-overlay"></div>
 
+    <button id="fullscreen-btn" class="fullscreen-btn" title="Pantalla completa">
+        <i class="fas fa-expand"></i>
+    </button>
+
     <script async src="https://unpkg.com/es-module-shims/dist/es-module-shims.js"></script>
     <script type="importmap">
 {
@@ -998,6 +1002,28 @@ Gracias!`;
                     quoteModal.classList.remove('visible');
                     quoteOverlay.classList.remove('visible');
                 });
+
+                // Botón de pantalla completa
+                document.getElementById('fullscreen-btn')?.addEventListener('click', () => {
+                    this.toggleFullscreen();
+                    this.triggerHapticFeedback('medium');
+                });
+
+                // Detectar cambios de pantalla completa
+                document.addEventListener('fullscreenchange', () => {
+                    const fullscreenBtn = document.getElementById('fullscreen-btn');
+                    if (!document.fullscreenElement && fullscreenBtn) {
+                        // Se salió de pantalla completa (por ejemplo, presionando ESC)
+                        fullscreenBtn.classList.remove('active');
+                        fullscreenBtn.innerHTML = '<i class="fas fa-expand"></i>';
+                        fullscreenBtn.title = 'Pantalla completa';
+                        
+                        // Liberar bloqueo de orientación
+                        if (screen.orientation && screen.orientation.unlock) {
+                            screen.orientation.unlock();
+                        }
+                    }
+                });
             }
 
             setupWhatsAppListeners() {
@@ -1293,9 +1319,12 @@ Gracias!`;
             hideLoading() {
                 const loadingScreen = document.getElementById('loading-screen');
                 if (loadingScreen) {
-                    loadingScreen.style.opacity = '0';
+                    // Usar la clase CSS para una transición más suave
+                    loadingScreen.classList.add('fade-out');
+                    
                     setTimeout(() => {
                         loadingScreen.style.display = 'none';
+                        
                         // Asegurar que el estado inicial esté correcto
                         this.isAutoRotating = true;
                         const rotateBtn = document.getElementById('rotate');
@@ -1308,7 +1337,10 @@ Gracias!`;
                         if (whatsappBtn) {
                             whatsappBtn.classList.add('loaded');
                         }
-                    }, 500);
+                        
+                        // Vibración háptica sutil para indicar que la carga terminó
+                        this.triggerHapticFeedback('light');
+                    }, 800);
                 }
             }
 
@@ -1327,6 +1359,53 @@ Gracias!`;
                 this.camera.aspect = width / height;
                 this.camera.updateProjectionMatrix();
                 this.renderer.setSize(width, height);
+            }
+
+            toggleFullScreen() {
+                const elem = document.getElementById('container');
+                if (!document.fullscreenElement) {
+                    // Solicitar pantalla completa
+                    elem.requestFullscreen().catch(err => {
+                        console.log(`Error al intentar entrar en pantalla completa: ${err.message}`);
+                    });
+                } else {
+                    // Salir de pantalla completa
+                    document.exitFullscreen();
+                }
+            }
+
+            toggleFullscreen() {
+                const fullscreenBtn = document.getElementById('fullscreen-btn');
+                
+                if (!document.fullscreenElement) {
+                    // Entrar en pantalla completa
+                    document.documentElement.requestFullscreen().then(() => {
+                        fullscreenBtn.classList.add('active');
+                        fullscreenBtn.innerHTML = '<i class="fas fa-compress"></i>';
+                        fullscreenBtn.title = 'Salir de pantalla completa';
+                        
+                        // Forzar orientación landscape en móviles si es posible
+                        if (screen.orientation && screen.orientation.lock) {
+                            screen.orientation.lock('landscape').catch(() => {
+                                // Ignorar error si no se puede bloquear orientación
+                            });
+                        }
+                    }).catch(err => {
+                        console.log('Error al entrar en pantalla completa:', err);
+                    });
+                } else {
+                    // Salir de pantalla completa
+                    document.exitFullscreen().then(() => {
+                        fullscreenBtn.classList.remove('active');
+                        fullscreenBtn.innerHTML = '<i class="fas fa-expand"></i>';
+                        fullscreenBtn.title = 'Pantalla completa';
+                        
+                        // Liberar bloqueo de orientación
+                        if (screen.orientation && screen.orientation.unlock) {
+                            screen.orientation.unlock();
+                        }
+                    });
+                }
             }
 
             animate() {
